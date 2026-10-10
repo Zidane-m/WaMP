@@ -6,6 +6,7 @@ import path from 'path';
 import { env } from './config/env';
 import universitasRoutes from './routes/universitasRoutes';
 import kategoriRoutes from './routes/kategoriRoutes';
+import barangRoutes from './routes/barangRoutes';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import { errorHandler } from './middleware/errorHandler';
 
@@ -52,9 +53,10 @@ app.get('/api/health', (_req: Request, res: Response) => {
   });
 });
 
-// Master Data Routes
+// Master Data & Barang Routes
 app.use('/api/universitas', universitasRoutes);
 app.use('/api/kategori', kategoriRoutes);
+app.use('/api/barang', barangRoutes);
 
 // 404 & Centralized Error Handler
 app.use(notFoundHandler);

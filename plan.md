@@ -43,15 +43,15 @@ campuspreloved/
 **Selesai bila:** kedua endpoint referensi mengembalikan 200 dan data seed.
 
 ## Fase 3 — Backend: Endpoint Barang
-- [ ] Skema Zod: query filter, body POST, body PUT
-- [ ] `GET /api/barang` — JOIN, filter `id_universitas`, `id_kategori`, `search` (ILIKE, berparameter), `page`, `limit`, urut terbaru
-- [ ] `GET /api/barang/:id` — 404 bila tidak ada
-- [ ] Middleware `multer`: field `gambar`, jpg/png/webp, ≤ 2 MB, nama file acak, serve statis `/uploads`
-- [ ] `POST /api/barang` — validasi, upsert `pengguna` by email, simpan barang, 201
-- [ ] `PUT /api/barang/:id` — update parsial, 200 / 404 / 400
-- [ ] `DELETE /api/barang/:id` — hapus (dan file gambarnya), 204 / 404
-- [ ] Aturan: `Jual` ⇒ harga > 0, `Barter`/`Hibah` ⇒ harga = 0
-- [ ] Uji semua endpoint dengan Postman/Thunder Client/curl; simpan koleksi di `docs/`
+- [x] Skema Zod: query filter, body POST, body PUT (+ verifikasi PIN)
+- [x] `GET /api/barang` — JOIN, filter `id_universitas`, `id_kategori`, `search` (LIKE, berparameter), `page`, `limit`, urut terbaru
+- [x] `GET /api/barang/:id` — 404 bila tidak ada
+- [x] Middleware `multer`: field `gambar`, jpg/png/webp, ≤ 2 MB, nama file acak, serve statis `/uploads`
+- [x] `POST /api/barang` — validasi, upsert `pengguna` by email, simpan barang, 201
+- [x] `PUT /api/barang/:id` — update parsial, 200 / 404 / 403 / 400 (+ verifikasi PIN)
+- [x] `DELETE /api/barang/:id` — hapus (dan file gambarnya), 204 / 404 / 403 (+ verifikasi PIN)
+- [x] Aturan: `Jual` ⇒ harga > 0, `Barter`/`Hibah` ⇒ harga = 0
+- [x] Uji semua endpoint dengan Postman/Thunder Client/curl; simpan koleksi di `docs/`
 
 **Selesai bila:** semua status code di `docs/API.md` terbukti lewat pengujian.
 

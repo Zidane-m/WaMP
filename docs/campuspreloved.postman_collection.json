@@ -1,0 +1,109 @@
+{
+  "info": {
+    "name": "CampusPreloved API",
+    "description": "Koleksi Postman REST API CampusPreloved (Mata Kuliah Web and Mobile Programming)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Health Check",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:4000/api/health"
+      }
+    },
+    {
+      "name": "2. Get Universitas",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:4000/api/universitas"
+      }
+    },
+    {
+      "name": "3. Get Kategori",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:4000/api/kategori"
+      }
+    },
+    {
+      "name": "4. Get Barang (Semua)",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:4000/api/barang?page=1&limit=12"
+      }
+    },
+    {
+      "name": "5. Get Barang (Filter Universitas & Kategori & Search)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:4000/api/barang?id_universitas=1&id_kategori=1&search=kalkulus",
+          "query": [
+            { "key": "id_universitas", "value": "1" },
+            { "key": "id_kategori", "value": "1" },
+            { "key": "search", "value": "kalkulus" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "6. Get Barang Detail",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:4000/api/barang/1"
+      }
+    },
+    {
+      "name": "7. Post Barang Baru",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:4000/api/barang",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "nama_barang", "value": "Lampu Belajar LED Fleksibel", "type": "text" },
+            { "key": "deskripsi", "value": "Kondisi sangat baik, 3 mode pencahayaan, baterai awet.", "type": "text" },
+            { "key": "jenis_transaksi", "value": "Jual", "type": "text" },
+            { "key": "harga", "value": "45000", "type": "text" },
+            { "key": "kondisi", "value": "Sangat Baik", "type": "text" },
+            { "key": "id_kategori", "value": "2", "type": "text" },
+            { "key": "id_universitas", "value": "1", "type": "text" },
+            { "key": "nama_lengkap", "value": "Dewi Anggraini", "type": "text" },
+            { "key": "email", "value": "dewi@students.itb.ac.id", "type": "text" },
+            { "key": "no_whatsapp", "value": "081234567801", "type": "text" },
+            { "key": "pin", "value": "1234", "type": "text" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "8. Update Barang (Tandai Terjual dengan PIN)",
+      "request": {
+        "method": "PUT",
+        "url": "http://localhost:4000/api/barang/1",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pin\": \"1234\",\n  \"status\": \"Terjual\"\n}"
+        }
+      }
+    },
+    {
+      "name": "9. Delete Barang (dengan PIN)",
+      "request": {
+        "method": "DELETE",
+        "url": "http://localhost:4000/api/barang/1",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pin\": \"1234\"\n}"
+        }
+      }
+    }
+  ]
+}
