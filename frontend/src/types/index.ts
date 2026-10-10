@@ -35,6 +35,42 @@ export interface Barang {
   penjual: Penjual;
 }
 
+export interface User {
+  id_pengguna: number;
+  nama_lengkap: string;
+  email: string;
+  nim: string | null;
+  no_whatsapp: string;
+  created_at: string;
+  universitas: Universitas;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
+
+export interface CartItem {
+  id_keranjang: number;
+  added_at: string;
+  id_barang: number;
+  nama_barang: string;
+  deskripsi: string;
+  harga: number;
+  jenis_transaksi: JenisTransaksi;
+  kondisi: KondisiBarang;
+  status: StatusBarang;
+  gambar_url: string | null;
+  kategori: Kategori;
+  penjual: Penjual;
+}
+
+export interface CartSummary {
+  items: CartItem[];
+  total_estimasi: number;
+  total_barang: number;
+}
+
 export interface PaginationMeta {
   page: number;
   limit: number;

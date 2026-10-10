@@ -220,6 +220,37 @@ export async function getBarangById(id: number): Promise<BarangItem> {
   return mapRowToBarangItem(rows[0]);
 }
 
+export async function getBarangSaya(userId: number): Promise<BarangItem[]> {
+  const [rows] = await pool.query<RawBarangRow[]>(
+    `SELECT 
+      b.id_barang,
+      b.nama_barang,
+      b.deskripsi,
+      b.harga,
+      b.jenis_transaksi,
+      b.kondisi,
+      b.status,
+      b.gambar_url,
+      b.created_at,
+      kat.id_kategori,
+      kat.nama_kategori,
+      p.id_pengguna,
+      p.nama_lengkap,
+      p.no_whatsapp,
+      u.id_universitas,
+      u.nama_universitas
+    FROM barang b
+    JOIN kategori kat ON b.id_kategori = kat.id_kategori
+    JOIN pengguna p ON b.id_pengguna = p.id_pengguna
+    JOIN universitas u ON p.id_universitas = u.id_universitas
+    WHERE b.id_pengguna = ?
+    ORDER BY b.created_at DESC`,
+    [userId]
+  );
+
+  return rows.map(mapRowToBarangItem);
+}
+
 export interface CreateBarangInput {
   nama_barang: string;
   deskripsi: string;
@@ -232,12 +263,13 @@ export interface CreateBarangInput {
   email: string;
   nim?: string;
   no_whatsapp: string;
-  pin: string;
+  pin?: string;
 }
 
 export async function createBarang(
   data: CreateBarangInput,
-  file?: Express.Multer.File
+  file?: Express.Multer.File,
+  authUser?: { id_pengguna: number }
 ): Promise<BarangItem> {
   // 1. Verifikasi Universitas & Kategori ada
   const [univCheck] = await pool.query<RowDataPacket[]>(
@@ -258,15 +290,11 @@ export async function createBarang(
 
   const normalizedPhone = normalizeWhatsApp(data.no_whatsapp);
 
-  // 2. Upsert Pengguna berdasarkan Email
-  const [userRows] = await pool.query<RowDataPacket[]>(
-    'SELECT id_pengguna FROM pengguna WHERE email = ?',
-    [data.email]
-  );
-
+  // 2. Upsert Pengguna berdasarkan Email atau Gunakan id_pengguna dari sesi login
   let userId: number;
-  if (userRows.length > 0) {
-    userId = userRows[0].id_pengguna;
+  if (authUser) {
+    userId = authUser.id_pengguna;
+    // Perbarui data pengguna jika ada perubahan
     await pool.query(
       `UPDATE pengguna SET 
         nama_lengkap = ?, 
@@ -277,16 +305,40 @@ export async function createBarang(
       [data.nama_lengkap, data.id_universitas, data.nim || null, normalizedPhone, userId]
     );
   } else {
-    const [insertUser] = await pool.query<ResultSetHeader>(
-      `INSERT INTO pengguna (id_universitas, nama_lengkap, email, nim, no_whatsapp) 
-       VALUES (?, ?, ?, ?, ?)`,
-      [data.id_universitas, data.nama_lengkap, data.email, data.nim || null, normalizedPhone]
+    const [userRows] = await pool.query<RowDataPacket[]>(
+      'SELECT id_pengguna FROM pengguna WHERE email = ?',
+      [data.email]
     );
-    userId = insertUser.insertId;
+
+    if (userRows.length > 0) {
+      userId = userRows[0].id_pengguna;
+      await pool.query(
+        `UPDATE pengguna SET 
+          nama_lengkap = ?, 
+          id_universitas = ?, 
+          nim = ?, 
+          no_whatsapp = ? 
+         WHERE id_pengguna = ?`,
+        [data.nama_lengkap, data.id_universitas, data.nim || null, normalizedPhone, userId]
+      );
+    } else {
+      const [insertUser] = await pool.query<ResultSetHeader>(
+        `INSERT INTO pengguna (id_universitas, nama_lengkap, email, nim, no_whatsapp) 
+         VALUES (?, ?, ?, ?, ?)`,
+        [data.id_universitas, data.nama_lengkap, data.email, data.nim || null, normalizedPhone]
+      );
+      userId = insertUser.insertId;
+    }
   }
 
-  // 3. Hash PIN Keamanan
-  const hashedPin = await bcrypt.hash(data.pin, 10);
+  // 3. Hash PIN Keamanan (Wajib jika tidak login, opsional jika login)
+  let hashedPin: string | null = null;
+  if (data.pin) {
+    hashedPin = await bcrypt.hash(data.pin, 10);
+  } else if (!authUser) {
+    throw new AppError('PIN keamanan wajib diisi untuk pengguna yang belum masuk', 400);
+  }
+
   const gambarUrl = file ? `/uploads/${file.filename}` : null;
 
   // 4. Insert Barang
@@ -320,7 +372,7 @@ export async function createBarang(
 }
 
 export interface UpdateBarangInput {
-  pin: string;
+  pin?: string;
   nama_barang?: string;
   deskripsi?: string;
   jenis_transaksi?: 'Jual' | 'Barter' | 'Hibah';
@@ -334,7 +386,8 @@ export interface UpdateBarangInput {
 export async function updateBarang(
   id: number,
   data: UpdateBarangInput,
-  file?: Express.Multer.File
+  file?: Express.Multer.File,
+  authUser?: { id_pengguna: number }
 ): Promise<BarangItem> {
   // 1. Ambil data barang yang ada
   const [currentRows] = await pool.query<RowDataPacket[]>(
@@ -349,11 +402,25 @@ export async function updateBarang(
 
   const current = currentRows[0];
 
-  // 2. Verifikasi PIN Keamanan
-  const isPinValid = await bcrypt.compare(data.pin, current.pin_keamanan);
-  if (!isPinValid) {
-    if (file) await removeUploadedFile(`/uploads/${file.filename}`);
-    throw new AppError('PIN keamanan salah', 403);
+  // 2. Verifikasi Otorisasi: Pemilik yang sudah login bypass PIN, tamu wajib PIN
+  const isOwnerLoggedIn = authUser && authUser.id_pengguna === current.id_pengguna;
+
+  if (!isOwnerLoggedIn) {
+    if (!data.pin) {
+      if (file) await removeUploadedFile(`/uploads/${file.filename}`);
+      throw new AppError('PIN keamanan wajib disertakan', 400);
+    }
+
+    if (!current.pin_keamanan) {
+      if (file) await removeUploadedFile(`/uploads/${file.filename}`);
+      throw new AppError('Barang ini hanya dapat diedit oleh akun pemilik yang sedang masuk', 403);
+    }
+
+    const isPinValid = await bcrypt.compare(data.pin, current.pin_keamanan);
+    if (!isPinValid) {
+      if (file) await removeUploadedFile(`/uploads/${file.filename}`);
+      throw new AppError('PIN keamanan salah', 403);
+    }
   }
 
   // 3. Verifikasi kategori jika ada perubahan
@@ -426,7 +493,11 @@ export async function updateBarang(
   return getBarangById(id);
 }
 
-export async function deleteBarang(id: number, pin: string): Promise<void> {
+export async function deleteBarang(
+  id: number,
+  pin?: string,
+  authUser?: { id_pengguna: number }
+): Promise<void> {
   const [rows] = await pool.query<RowDataPacket[]>(
     'SELECT * FROM barang WHERE id_barang = ?',
     [id]
@@ -438,10 +509,22 @@ export async function deleteBarang(id: number, pin: string): Promise<void> {
 
   const current = rows[0];
 
-  // Verifikasi PIN
-  const isPinValid = await bcrypt.compare(pin, current.pin_keamanan);
-  if (!isPinValid) {
-    throw new AppError('PIN keamanan salah', 403);
+  // Verifikasi Otorisasi: Pemilik yang sudah login bypass PIN
+  const isOwnerLoggedIn = authUser && authUser.id_pengguna === current.id_pengguna;
+
+  if (!isOwnerLoggedIn) {
+    if (!pin) {
+      throw new AppError('PIN keamanan wajib disertakan', 400);
+    }
+
+    if (!current.pin_keamanan) {
+      throw new AppError('Barang ini hanya dapat dihapus oleh akun pemilik yang sedang masuk', 403);
+    }
+
+    const isPinValid = await bcrypt.compare(pin, current.pin_keamanan);
+    if (!isPinValid) {
+      throw new AppError('PIN keamanan salah', 403);
+    }
   }
 
   // Hapus file fisik gambar jika ada

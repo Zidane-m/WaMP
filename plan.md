@@ -107,11 +107,14 @@ campuspreloved/
 - [x] `README.md`: deskripsi lengkap, fitur, tech stack, cara menjalankan lokal 1 perintah, dokumentasi API, batasan PIN
 - [x] Bahan presentasi & diagram: diagram 3-tier dan ERD Mermaid lengkap di README.md
 
-## Fase 10 — Opsional (setelah Fase 0–9 selesai)
-- [ ] Autentikasi: kolom `password_hash`, `POST /api/auth/daftar|masuk`, JWT, batasi `PUT/DELETE` ke pemilik
+## Fase 10 — Fitur Tambahan Terintegrasi (Selesai)
+- [x] Autentikasi Pengguna Mahasiswa: kolom `password_hash`, `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`, JWT token di localStorage & axios interceptor
+- [x] Otorisasi Pemilik Tanpa PIN: penjual yang masuk akun dapat mengedit, memperbarui ketersediaan (tersedia/terjual), dan menghapus barang langsung tanpa memerlukan PIN
+- [x] Dashboard "Barang Saya" (`/barang-saya`): kelola seluruh barang jualan milik akun, filter tab Semua/Tersedia/Terjual, aksi cepat tandai status & hapus
+- [x] Keranjang / Daftar Incaran Kampus (`/keranjang`): simpan barang favorit mahasiswa, hitung estimasi total pengeluaran belanja, tombol langsung chat WhatsApp penjual untuk COD aman di kampus
 - [ ] PWA (manifest + service worker)
-- [ ] Favorit, rating, barter terstruktur
-- [ ] Simpan foto di object storage (Supabase Storage / Cloudinary)
+- [ ] Rating penjual & barter terstruktur
+- [ ] Simpan foto di object storage cloud (opsional deployment)
 
 ---
 

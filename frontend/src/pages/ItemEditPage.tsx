@@ -17,6 +17,7 @@ import { Barang, Kategori, JenisTransaksi, KondisiBarang, StatusBarang } from '.
 import Spinner from '../components/ui/Spinner';
 import ErrorMessage from '../components/ui/ErrorMessage';
 import ItemImage from '../components/ui/ItemImage';
+import { useAuth } from '../context/AuthContext';
 
 interface ItemEditInputs {
   nama_barang: string;
@@ -33,6 +34,7 @@ export const ItemEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
 
   // Ambil PIN dari state jika sebelumnya sudah dimasukkan di modal
   const initialPin = (location.state as { pin?: string })?.pin || '';
@@ -171,6 +173,8 @@ export const ItemEditPage: React.FC = () => {
     }
   };
 
+  const isOwner = Boolean(user && item && user.id_pengguna === item.penjual.id_pengguna);
+
   // Submit Handler
   const onSubmit = async (data: ItemEditInputs) => {
     if (!id) return;
@@ -179,7 +183,9 @@ export const ItemEditPage: React.FC = () => {
 
     try {
       const formData = new FormData();
-      formData.append('pin', data.pin);
+      if (data.pin) {
+        formData.append('pin', data.pin);
+      }
       formData.append('nama_barang', data.nama_barang);
       formData.append('deskripsi', data.deskripsi);
       formData.append('id_kategori', data.id_kategori);
@@ -563,49 +569,60 @@ export const ItemEditPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-brand-600" />
               <h2 id="section-pin-auth" className="text-base font-bold text-navy-900">
-                4. Otorisasi PIN Keamanan
+                4. Otorisasi Perubahan Barang
               </h2>
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              Masukkan PIN angka yang Anda gunakan saat memposting barang ini untuk mengesahkan perubahan.
+              {isOwner
+                ? 'Akun Anda terverifikasi sebagai pemilik barang ini. Perubahan dapat disimpan langsung.'
+                : 'Masukkan PIN angka yang Anda gunakan saat memposting barang ini untuk mengesahkan perubahan.'}
             </p>
           </div>
 
-          <div className="max-w-xs">
-            <label htmlFor="edit_pin" className="block text-xs font-bold text-slate-700 mb-1.5">
-              PIN Keamanan Anda <span className="text-rose-500">*</span>
-            </label>
-            <div className="relative">
-              <input
-                id="edit_pin"
-                type={showPin ? 'text' : 'password'}
-                maxLength={6}
-                inputMode="numeric"
-                placeholder="4-6 digit angka"
-                {...register('pin', {
-                  required: 'PIN keamanan wajib disertakan untuk menyimpan perubahan',
-                  pattern: {
-                    value: /^\d{4,6}$/,
-                    message: 'PIN harus berupa 4 hingga 6 digit angka',
-                  },
-                })}
-                className={`w-full px-3.5 py-2.5 pr-11 rounded-xl border text-sm font-mono tracking-wider focus-visible:ring-2 focus-visible:ring-brand-500 min-h-[44px] transition-colors ${
-                  errors.pin ? 'border-rose-400 bg-rose-50/20' : 'border-slate-300'
-                }`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPin(!showPin)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 min-h-[44px] min-w-[44px] justify-center"
-                aria-label={showPin ? 'Sembunyikan PIN' : 'Tampilkan PIN'}
-              >
-                {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
+          {isOwner ? (
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2.5">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+              <p className="font-semibold">
+                Masuk sebagai {user?.nama_lengkap}. Anda tidak memerlukan PIN untuk memperbarui data barang Anda.
+              </p>
             </div>
-            {errors.pin && (
-              <p className="text-rose-600 text-xs mt-1.5 font-medium">{errors.pin.message}</p>
-            )}
-          </div>
+          ) : (
+            <div className="max-w-xs">
+              <label htmlFor="edit_pin" className="block text-xs font-bold text-slate-700 mb-1.5">
+                PIN Keamanan Anda <span className="text-rose-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  id="edit_pin"
+                  type={showPin ? 'text' : 'password'}
+                  maxLength={6}
+                  inputMode="numeric"
+                  placeholder="4-6 digit angka"
+                  {...register('pin', {
+                    required: isOwner ? false : 'PIN keamanan wajib disertakan untuk menyimpan perubahan',
+                    pattern: {
+                      value: /^\d{4,6}$/,
+                      message: 'PIN harus berupa 4 hingga 6 digit angka',
+                    },
+                  })}
+                  className={`w-full px-3.5 py-2.5 pr-11 rounded-xl border text-sm font-mono tracking-wider focus-visible:ring-2 focus-visible:ring-brand-500 min-h-[44px] transition-colors ${
+                    errors.pin ? 'border-rose-400 bg-rose-50/20' : 'border-slate-300'
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPin(!showPin)}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 min-h-[44px] min-w-[44px] justify-center"
+                  aria-label={showPin ? 'Sembunyikan PIN' : 'Tampilkan PIN'}
+                >
+                  {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              {errors.pin && (
+                <p className="text-rose-600 text-xs mt-1.5 font-medium">{errors.pin.message}</p>
+              )}
+            </div>
+          )}
         </section>
 
         {/* Tombol Aksi */}

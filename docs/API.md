@@ -1,4 +1,4 @@
-# Dokumentasi REST API — CampusPreloved
+# Dokumentasi REST API - WarisanKampus
 
 Base URL lokal: `http://localhost:4000` · Semua endpoint di bawah awalan `/api`.
 Format: JSON (kecuali POST/PUT barang yang memakai `multipart/form-data` bila ada foto).
@@ -118,7 +118,58 @@ Memperbarui barang (parsial: hanya kirim field yang diubah).
 
 ## DELETE /api/barang/{id}
 Menghapus barang beserta file gambarnya.
-- Wajib menyertakan `pin` (dikirim di body JSON `{"pin": "1234"}` atau header `X-Item-PIN: 1234`).
+- Jika pengguna masuk sebagai pemilik: PIN tidak diperlukan.
+- Jika tamu: Wajib menyertakan `pin` (dikirim di body JSON `{"pin": "1234"}` atau header `X-Item-PIN: 1234`).
 - **204** tanpa body
-- **403** PIN keamanan salah
+- **403** PIN keamanan salah / bukan pemilik akun
 - **404** barang tidak ditemukan
+
+---
+
+## GET /api/barang/saya
+Daftar seluruh barang yang dimiliki oleh pengguna yang sedang login.
+- Header: `Authorization: Bearer <jwt_token>`
+- **200** `{"data": [...], "message": "Daftar barang saya berhasil diambil"}`
+- **401** belum login
+
+---
+
+## POST /api/auth/register
+Mendaftarkan akun mahasiswa baru.
+- Body: `nama_lengkap`, `email`, `password`, `id_universitas`, `nim` (opsional), `no_whatsapp`.
+- **201** `{"message": "Pendaftaran akun berhasil", "data": { "user": {...}, "token": "..." }}`
+- **400** validasi gagal atau email sudah terdaftar
+
+## POST /api/auth/login
+Masuk ke akun mahasiswa terdaftar.
+- Body: `email`, `password`.
+- **200** `{"message": "Berhasil masuk ke akun", "data": { "user": {...}, "token": "..." }}`
+- **401** email atau kata sandi salah
+
+## GET /api/auth/me
+Mendapatkan profil akun yang sedang login.
+- Header: `Authorization: Bearer <jwt_token>`
+- **200** `{"message": "Profil pengguna berhasil diambil", "data": {...}}`
+- **401** token tidak valid atau kedaluwarsa
+
+---
+
+## GET /api/keranjang
+Mengambil seluruh daftar barang incaran di keranjang pengguna dan total estimasi harga.
+- Header: `Authorization: Bearer <jwt_token>`
+- **200** `{"message": "Daftar keranjang berhasil diambil", "data": { "items": [...], "total_estimasi": 190000, "total_barang": 2 }}`
+- **401** belum login
+
+## POST /api/keranjang/{id_barang}
+Menambahkan barang ke dalam keranjang incaran pengguna.
+- Header: `Authorization: Bearer <jwt_token>`
+- **201** `{"message": "Barang berhasil ditambahkan ke keranjang incaran"}`
+- **400** barang milik sendiri
+- **404** barang tidak ditemukan
+
+## DELETE /api/keranjang/{id_barang}
+Menghapus barang dari keranjang incaran pengguna.
+- Header: `Authorization: Bearer <jwt_token>`
+- **200** `{"message": "Barang berhasil dihapus dari keranjang"}`
+- **404** barang tidak ada di keranjang
+

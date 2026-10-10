@@ -7,6 +7,8 @@ import { env } from './config/env';
 import universitasRoutes from './routes/universitasRoutes';
 import kategoriRoutes from './routes/kategoriRoutes';
 import barangRoutes from './routes/barangRoutes';
+import authRoutes from './routes/authRoutes';
+import keranjangRoutes from './routes/keranjangRoutes';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import { errorHandler } from './middleware/errorHandler';
 
@@ -31,15 +33,17 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // Root & API Welcome Endpoints
 app.get(['/', '/api'], (_req: Request, res: Response) => {
   res.status(200).json({
-    name: 'CampusPreloved Backend API',
+    name: 'WarisanKampus Backend API',
     status: 'online',
     version: '1.0.0',
-    message: 'Server API CampusPreloved aktif dan siap menerima request',
+    message: 'Server API WarisanKampus aktif dan siap menerima request',
     endpoints: {
       health: '/api/health',
+      auth: '/api/auth',
       universitas: '/api/universitas',
       kategori: '/api/kategori',
-      barang: '/api/barang'
+      barang: '/api/barang',
+      keranjang: '/api/keranjang'
     }
   });
 });
@@ -48,15 +52,17 @@ app.get(['/', '/api'], (_req: Request, res: Response) => {
 app.get('/api/health', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',
-    message: 'CampusPreloved API Server is running',
+    message: 'WarisanKampus API Server is running',
     timestamp: new Date().toISOString()
   });
 });
 
-// Master Data & Barang Routes
+// API Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/universitas', universitasRoutes);
 app.use('/api/kategori', kategoriRoutes);
 app.use('/api/barang', barangRoutes);
+app.use('/api/keranjang', keranjangRoutes);
 
 // 404 & Centralized Error Handler
 app.use(notFoundHandler);

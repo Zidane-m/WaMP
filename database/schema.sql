@@ -1,9 +1,10 @@
--- CampusPreloved — Skema Basis Data MySQL (Laragon / Production)
+-- WarisanKampus: Skema Basis Data MySQL (Laragon / Production)
 -- Database: campuspreloved
 CREATE DATABASE IF NOT EXISTS campuspreloved;
 USE campuspreloved;
 
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS keranjang;
 DROP TABLE IF EXISTS barang;
 DROP TABLE IF EXISTS pengguna;
 DROP TABLE IF EXISTS kategori;
@@ -18,12 +19,13 @@ CREATE TABLE universitas (
     provinsi          VARCHAR(50)  NOT NULL DEFAULT 'Jawa Barat'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 2. Tabel Pengguna (Penjual)
+-- 2. Tabel Pengguna (Mahasiswa / Penjual)
 CREATE TABLE pengguna (
     id_pengguna     INT AUTO_INCREMENT PRIMARY KEY,
     id_universitas  INT          NOT NULL,
     nama_lengkap    VARCHAR(100) NOT NULL,
     email           VARCHAR(100) NOT NULL UNIQUE,
+    password_hash   VARCHAR(255) NULL, -- Hash bcrypt dari password akun
     nim             VARCHAR(30)  NULL,
     no_whatsapp     VARCHAR(20)  NOT NULL,
     created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -38,7 +40,7 @@ CREATE TABLE kategori (
     nama_kategori  VARCHAR(50) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 4. Tabel Barang Preloved & Barter
+-- 4. Tabel Barang Preloved, Barter, & Hibah
 CREATE TABLE barang (
     id_barang        INT AUTO_INCREMENT PRIMARY KEY,
     id_pengguna      INT           NOT NULL,
@@ -50,7 +52,7 @@ CREATE TABLE barang (
     kondisi          VARCHAR(30)   NOT NULL,
     status           VARCHAR(10)   NOT NULL DEFAULT 'Tersedia',
     gambar_url       VARCHAR(255)  NULL,
-    pin_keamanan     VARCHAR(60)   NOT NULL, -- Hash bcrypt dari PIN 4-6 digit
+    pin_keamanan     VARCHAR(60)   NULL, -- Hash bcrypt dari PIN jika posting tanpa login
     created_at       DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_barang_pengguna
         FOREIGN KEY (id_pengguna) REFERENCES pengguna (id_pengguna)
@@ -63,17 +65,28 @@ CREATE TABLE barang (
     CONSTRAINT chk_barang_kondisi
         CHECK (kondisi IN ('Sangat Baik', 'Layak Pakai', 'Perlu Perbaikan Sedikit')),
     CONSTRAINT chk_barang_status
-        CHECK (status IN ('Tersedia', 'Terjual')),
-    CONSTRAINT chk_harga_jenis
-        CHECK (
-            (jenis_transaksi = 'Jual' AND harga > 0) OR
-            (jenis_transaksi <> 'Jual' AND harga = 0)
-        )
+        CHECK (status IN ('Tersedia', 'Terjual'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Indeks untuk optimasi query katalog dan filter
-CREATE INDEX idx_pengguna_universitas ON pengguna (id_universitas);
-CREATE INDEX idx_barang_pengguna      ON barang (id_pengguna);
-CREATE INDEX idx_barang_kategori      ON barang (id_kategori);
-CREATE INDEX idx_barang_status        ON barang (status);
-CREATE INDEX idx_barang_created_at    ON barang (created_at DESC);
+-- 5. Tabel Keranjang / Daftar Incaran Mahasiswa
+CREATE TABLE keranjang (
+    id_keranjang INT AUTO_INCREMENT PRIMARY KEY,
+    id_pengguna  INT NOT NULL,
+    id_barang    INT NOT NULL,
+    created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_pengguna_barang (id_pengguna, id_barang),
+    CONSTRAINT fk_keranjang_pengguna
+        FOREIGN KEY (id_pengguna) REFERENCES pengguna (id_pengguna)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_keranjang_barang
+        FOREIGN KEY (id_barang) REFERENCES barang (id_barang)
+        ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Indeks untuk mempercepat query pencarian dan join
+CREATE INDEX idx_barang_univ ON pengguna (id_universitas);
+CREATE INDEX idx_barang_kategori ON barang (id_kategori);
+CREATE INDEX idx_barang_status ON barang (status);
+CREATE INDEX idx_barang_created ON barang (created_at);
+CREATE INDEX idx_universitas_prov ON universitas (provinsi);
+CREATE INDEX idx_keranjang_pengguna ON keranjang (id_pengguna);

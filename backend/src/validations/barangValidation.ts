@@ -78,9 +78,10 @@ export const createBarangSchema = z
       .min(9, 'Nomor WhatsApp minimal 9 digit')
       .max(20, 'Nomor WhatsApp maksimal 20 digit'),
     pin: z
-      .string({ required_error: 'PIN keamanan wajib diisi' })
+      .string()
       .trim()
       .regex(/^\d{4,6}$/, 'PIN keamanan harus berupa 4-6 digit angka')
+      .optional()
   })
   .superRefine((data, ctx) => {
     if (data.jenis_transaksi === 'Jual' && data.harga <= 0) {
@@ -102,9 +103,9 @@ export const createBarangSchema = z
 export const updateBarangSchema = z
   .object({
     pin: z
-      .string({ required_error: 'PIN keamanan wajib disertakan' })
+      .string()
       .trim()
-      .min(1, 'PIN keamanan wajib diisi'),
+      .optional(),
     nama_barang: z.string().trim().min(3).max(150).optional(),
     deskripsi: z.string().trim().min(10).max(2000).optional(),
     jenis_transaksi: z.enum(['Jual', 'Barter', 'Hibah']).optional(),

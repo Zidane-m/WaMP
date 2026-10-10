@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { Universitas, Kategori, JenisTransaksi, KondisiBarang } from '../types';
+import { useAuth } from '../context/AuthContext';
 
 interface ItemFormInputs {
   nama_barang: string;
@@ -32,6 +33,7 @@ interface ItemFormInputs {
 
 export const ItemFormPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Data Referensi
   const [universities, setUniversities] = useState<Universitas[]>([]);
@@ -110,6 +112,16 @@ export const ItemFormPage: React.FC = () => {
     }
   }, [selectedJenisTransaksi, setValue]);
 
+  // Efek prefill profil jika user sudah login
+  useEffect(() => {
+    if (user) {
+      setValue('nama_lengkap', user.nama_lengkap);
+      setValue('email', user.email);
+      setValue('no_whatsapp', user.no_whatsapp);
+      setValue('id_universitas', String(user.universitas.id_universitas));
+    }
+  }, [user, setValue]);
+
   // Handle pilih file foto
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -176,7 +188,9 @@ export const ItemFormPage: React.FC = () => {
       formData.append('email', data.email);
       formData.append('no_whatsapp', data.no_whatsapp);
       formData.append('id_universitas', data.id_universitas);
-      formData.append('pin', data.pin);
+      if (data.pin) {
+        formData.append('pin', data.pin);
+      }
 
       if (selectedFile) {
         formData.append('gambar', selectedFile);
@@ -624,82 +638,105 @@ export const ItemFormPage: React.FC = () => {
           </div>
         </section>
 
-        {/* BAGIAN 4: PIN Keamanan (Tanpa Login) */}
+        {/* BAGIAN 4: PIN Keamanan / Otorisasi Akun */}
         <section aria-labelledby="section-keamanan">
           <div className="border-b border-slate-100 pb-3 mb-5">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-brand-600" />
               <h2 id="section-keamanan" className="text-base font-bold text-navy-900">
-                4. PIN Keamanan Barang
+                4. Otorisasi Keamanan Iklan
               </h2>
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              Karena platform ini tanpa registrasi akun, PIN angka 4-6 digit ini berfungsi sebagai kunci otorisasi jika Anda ingin mengubah harga atau menghapus barang ini nanti.
+              {user
+                ? 'Akun Anda sudah masuk dan terverifikasi. Barang akan otomatis terhubung ke akun Anda.'
+                : 'PIN angka 4-6 digit ini berfungsi sebagai kunci otorisasi jika Anda ingin mengubah harga atau menghapus barang ini nanti.'}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Field PIN */}
-            <div>
-              <label htmlFor="pin" className="block text-xs font-bold text-slate-700 mb-1.5">
-                Buat PIN (4-6 Digit Angka) <span className="text-rose-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  id="pin"
-                  type={showPin ? 'text' : 'password'}
-                  maxLength={6}
-                  placeholder="Misal: 1234"
-                  inputMode="numeric"
-                  {...register('pin', {
-                    required: 'PIN wajib dibuat untuk otorisasi barang',
-                    pattern: {
-                      value: /^\d{4,6}$/,
-                      message: 'PIN harus berupa 4 hingga 6 digit angka',
-                    },
-                  })}
-                  className={`w-full px-3.5 py-2.5 pr-11 rounded-xl border text-sm font-mono tracking-wider focus-visible:ring-2 focus-visible:ring-brand-500 min-h-[44px] transition-colors ${
-                    errors.pin ? 'border-rose-400 bg-rose-50/20' : 'border-slate-300'
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPin(!showPin)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 min-h-[44px] min-w-[44px] justify-center"
-                  aria-label={showPin ? 'Sembunyikan PIN' : 'Tampilkan PIN'}
-                >
-                  {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+          {user ? (
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-3">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+              <div className="space-y-0.5">
+                <p className="font-bold">Terhubung ke Akun {user.nama_lengkap}</p>
+                <p className="text-emerald-700">
+                  Anda tidak perlu membuat PIN keamanan. Iklan ini dapat Anda pantau dan kelola langsung di halaman <strong>Barang Saya</strong>.
+                </p>
               </div>
-              {errors.pin && (
-                <p className="text-rose-600 text-xs mt-1.5 font-medium">{errors.pin.message}</p>
-              )}
             </div>
+          ) : (
+            <>
+              <div className="mb-4 p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                <span className="text-slate-600">Punya akun mahasiswa?</span>
+                <Link to="/masuk" className="font-bold text-brand-600 hover:underline">
+                  Masuk agar tidak perlu PIN
+                </Link>
+              </div>
 
-            {/* Konfirmasi PIN */}
-            <div>
-              <label htmlFor="konfirmasi_pin" className="block text-xs font-bold text-slate-700 mb-1.5">
-                Konfirmasi PIN <span className="text-rose-500">*</span>
-              </label>
-              <input
-                id="konfirmasi_pin"
-                type={showPin ? 'text' : 'password'}
-                maxLength={6}
-                placeholder="Ulangi PIN di atas"
-                inputMode="numeric"
-                {...register('konfirmasi_pin', {
-                  required: 'Konfirmasi PIN wajib diisi',
-                  validate: (val) => val === watchPin || 'Konfirmasi PIN tidak cocok dengan PIN di atas',
-                })}
-                className={`w-full px-3.5 py-2.5 rounded-xl border text-sm font-mono tracking-wider focus-visible:ring-2 focus-visible:ring-brand-500 min-h-[44px] transition-colors ${
-                  errors.konfirmasi_pin ? 'border-rose-400 bg-rose-50/20' : 'border-slate-300'
-                }`}
-              />
-              {errors.konfirmasi_pin && (
-                <p className="text-rose-600 text-xs mt-1.5 font-medium">{errors.konfirmasi_pin.message}</p>
-              )}
-            </div>
-          </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Field PIN */}
+                <div>
+                  <label htmlFor="pin" className="block text-xs font-bold text-slate-700 mb-1.5">
+                    Buat PIN (4-6 Digit Angka) <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="pin"
+                      type={showPin ? 'text' : 'password'}
+                      maxLength={6}
+                      placeholder="Misal: 1234"
+                      inputMode="numeric"
+                      {...register('pin', {
+                        required: user ? false : 'PIN wajib dibuat untuk otorisasi barang',
+                        pattern: {
+                          value: /^\d{4,6}$/,
+                          message: 'PIN harus berupa 4 hingga 6 digit angka',
+                        },
+                      })}
+                      className={`w-full px-3.5 py-2.5 pr-11 rounded-xl border text-sm font-mono tracking-wider focus-visible:ring-2 focus-visible:ring-brand-500 min-h-[44px] transition-colors ${
+                        errors.pin ? 'border-rose-400 bg-rose-50/20' : 'border-slate-300'
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPin(!showPin)}
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 min-h-[44px] min-w-[44px] justify-center"
+                      aria-label={showPin ? 'Sembunyikan PIN' : 'Tampilkan PIN'}
+                    >
+                      {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  {errors.pin && (
+                    <p className="text-rose-600 text-xs mt-1.5 font-medium">{errors.pin.message}</p>
+                  )}
+                </div>
+
+                {/* Konfirmasi PIN */}
+                <div>
+                  <label htmlFor="konfirmasi_pin" className="block text-xs font-bold text-slate-700 mb-1.5">
+                    Konfirmasi PIN <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    id="konfirmasi_pin"
+                    type={showPin ? 'text' : 'password'}
+                    maxLength={6}
+                    placeholder="Ulangi PIN di atas"
+                    inputMode="numeric"
+                    {...register('konfirmasi_pin', {
+                      required: user ? false : 'Konfirmasi PIN wajib diisi',
+                      validate: (val) => (user ? true : val === watchPin || 'Konfirmasi PIN tidak cocok dengan PIN di atas'),
+                    })}
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-sm font-mono tracking-wider focus-visible:ring-2 focus-visible:ring-brand-500 min-h-[44px] transition-colors ${
+                      errors.konfirmasi_pin ? 'border-rose-400 bg-rose-50/20' : 'border-slate-300'
+                    }`}
+                  />
+                  {errors.konfirmasi_pin && (
+                    <p className="text-rose-600 text-xs mt-1.5 font-medium">{errors.konfirmasi_pin.message}</p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </section>
 
         {/* Tombol Submit & Aksi */}

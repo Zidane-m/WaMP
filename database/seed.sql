@@ -68,17 +68,18 @@ INSERT INTO kategori (id_kategori, nama_kategori) VALUES
   (5, 'Pakaian & Almamater'),
   (6, 'Lainnya');
 
--- 3. Data Pengguna (Penjual)
-INSERT INTO pengguna (id_pengguna, id_universitas, nama_lengkap, email, nim, no_whatsapp) VALUES
-  (1, 1, 'Dewi Anggraini',  'dewi@students.itb.ac.id',   '13522001', '6281234567801'),
-  (2, 2, 'Rizky Pratama',   'rizky@students.unpad.ac.id','140110220010', '6281234567802'),
-  (3, 3, 'Salsabila Putri', 'salsa@student.telkomuniversity.ac.id', '1301223344', '6281234567803'),
-  (4, 4, 'Ahmad Fauzan',    'fauzan@ui.ac.id',           '2206012345', '6281234567804'),
-  (5, 5, 'Nadia Kusuma',    'nadia@mail.ugm.ac.id',      '22/500001/TK/55000', '6281234567805'),
-  (6, 6, 'Bagas Wicaksono', 'bagas@apps.ipb.ac.id',      'G6401221001', '6281234567806');
+-- 3. Data Pengguna (Penjual / Akun Mahasiswa Demo)
+-- Password demo untuk semua akun: 'password123'
+-- Hash bcrypt '$2b$10$fV2F2cHQK90bZeqm5oE08OXkK1P6hUqPqZgXhYcZb7l7jZlZ6n8yG'
+INSERT INTO pengguna (id_pengguna, id_universitas, nama_lengkap, email, password_hash, nim, no_whatsapp) VALUES
+  (1, 1, 'Dewi Anggraini',  'dewi@students.itb.ac.id',   '$2b$10$fV2F2cHQK90bZeqm5oE08OXkK1P6hUqPqZgXhYcZb7l7jZlZ6n8yG', '13522001', '6281234567801'),
+  (2, 2, 'Rizky Pratama',   'rizky@students.unpad.ac.id','$2b$10$fV2F2cHQK90bZeqm5oE08OXkK1P6hUqPqZgXhYcZb7l7jZlZ6n8yG', '140110220010', '6281234567802'),
+  (3, 3, 'Salsabila Putri', 'salsa@student.telkomuniversity.ac.id', '$2b$10$fV2F2cHQK90bZeqm5oE08OXkK1P6hUqPqZgXhYcZb7l7jZlZ6n8yG', '1301223344', '6281234567803'),
+  (4, 4, 'Ahmad Fauzan',    'fauzan@ui.ac.id',           '$2b$10$fV2F2cHQK90bZeqm5oE08OXkK1P6hUqPqZgXhYcZb7l7jZlZ6n8yG', '2206012345', '6281234567804'),
+  (5, 5, 'Nadia Kusuma',    'nadia@mail.ugm.ac.id',      '$2b$10$fV2F2cHQK90bZeqm5oE08OXkK1P6hUqPqZgXhYcZb7l7jZlZ6n8yG', '22/500001/TK/55000', '6281234567805'),
+  (6, 6, 'Bagas Wicaksono', 'bagas@apps.ipb.ac.id',      '$2b$10$fV2F2cHQK90bZeqm5oE08OXkK1P6hUqPqZgXhYcZb7l7jZlZ6n8yG', 'G6401221001', '6281234567806');
 
--- 4. Data Barang (PIN demo: '1234', hash bcrypt disimpan di pin_keamanan)
--- Hash '$2a$10$wN166/3QvC.hSjZzZg/uG.Z4h4d8k7w3e1e5h2e6h5e8h2e6h5e8h' atau string hash bcrypt 60 karakter
+-- 4. Data Barang (PIN demo: '1234')
 INSERT INTO barang
   (id_barang, id_pengguna, id_kategori, nama_barang, deskripsi, harga, jenis_transaksi, kondisi, status, gambar_url, pin_keamanan) VALUES
   (1, 1, 1, 'Kalkulus Edisi 9 (Purcell)',
@@ -113,3 +114,9 @@ INSERT INTO barang
       'Dipakai satu tahun, bersih. Bisa barter dengan jaket hoodie ukuran L.',
       0.00, 'Barter', 'Sangat Baik', 'Tersedia', NULL,
       '$2b$10$fV2F2cHQK90bZeqm5oE08OXkK1P6hUqPqZgXhYcZb7l7jZlZ6n8yG');
+
+-- 5. Data Sampel Keranjang Incaran
+INSERT INTO keranjang (id_pengguna, id_barang) VALUES
+  (1, 3), -- Dewi mengincar Rak Buku Kayu
+  (1, 6); -- Dewi mengincar Buku Fisika Dasar
+

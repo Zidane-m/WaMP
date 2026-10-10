@@ -6,7 +6,6 @@ import {
   idParamSchema
 } from '../validations/barangValidation';
 import * as barangService from '../services/barangService';
-import { AppError } from '../middleware/errorHandler';
 
 export async function getBarang(
   req: Request,
@@ -36,6 +35,23 @@ export async function getBarangDetail(
   }
 }
 
+export async function getBarangSaya(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const userId = req.user!.id_pengguna;
+    const items = await barangService.getBarangSaya(userId);
+    res.status(200).json({
+      data: items,
+      message: 'Daftar barang saya berhasil diambil'
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function createBarang(
   req: Request,
   res: Response,
@@ -43,7 +59,7 @@ export async function createBarang(
 ): Promise<void> {
   try {
     const validatedData = createBarangSchema.parse(req.body);
-    const newItem = await barangService.createBarang(validatedData, req.file);
+    const newItem = await barangService.createBarang(validatedData, req.file, req.user);
     res.status(201).json({
       data: newItem,
       message: 'Barang berhasil ditambahkan'
@@ -61,7 +77,7 @@ export async function updateBarang(
   try {
     const { id } = idParamSchema.parse(req.params);
     const validatedData = updateBarangSchema.parse(req.body);
-    const updatedItem = await barangService.updateBarang(id, validatedData, req.file);
+    const updatedItem = await barangService.updateBarang(id, validatedData, req.file, req.user);
     res.status(200).json({
       data: updatedItem,
       message: 'Barang berhasil diperbarui'
@@ -80,11 +96,7 @@ export async function deleteBarang(
     const { id } = idParamSchema.parse(req.params);
     const pin = (req.body?.pin || req.headers['x-item-pin']) as string | undefined;
 
-    if (!pin || typeof pin !== 'string' || pin.trim().length === 0) {
-      throw new AppError('PIN keamanan wajib disertakan untuk menghapus barang', 400);
-    }
-
-    await barangService.deleteBarang(id, pin.trim());
+    await barangService.deleteBarang(id, pin?.trim(), req.user);
     res.status(204).send();
   } catch (error) {
     next(error);

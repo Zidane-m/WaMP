@@ -11,9 +11,12 @@ import {
   ShieldCheck,
   Tag,
   Sparkles,
+  ShoppingCart,
+  BookmarkCheck,
+  UserCheck
 } from 'lucide-react';
 import { api } from '../lib/api';
-import { Barang } from '../types';
+import { Barang, StatusBarang } from '../types';
 import { formatRupiah, formatDate } from '../lib/format';
 import { buildWhatsAppLink } from '../lib/whatsapp';
 import Badge from '../components/ui/Badge';
@@ -21,22 +24,28 @@ import ItemImage from '../components/ui/ItemImage';
 import Spinner from '../components/ui/Spinner';
 import ErrorMessage from '../components/ui/ErrorMessage';
 import PinVerificationModal, { PinActionType } from '../components/items/PinVerificationModal';
+import { useAuth } from '../context/AuthContext';
 
 export const ItemDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, refreshCartCount } = useAuth();
 
   const [item, setItem] = useState<Barang | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Status Keranjang
+  const [isInCart, setIsInCart] = useState<boolean>(false);
+  const [isCartSubmitting, setIsCartSubmitting] = useState<boolean>(false);
 
   // Pesan Flash dari navigasi sebelumnya (misal baru posting)
   const [flashMessage, setFlashMessage] = useState<string | null>(
     (location.state as { message?: string })?.message || null
   );
 
-  // State Modal Verifikasi PIN
+  // State Modal Verifikasi PIN (untuk fallback tamu)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalAction, setModalAction] = useState<PinActionType>('edit');
   const [isModalLoading, setIsModalLoading] = useState<boolean>(false);
@@ -51,6 +60,17 @@ export const ItemDetailPage: React.FC = () => {
     try {
       const data = await api.getItemById(id);
       setItem(data);
+
+      // Cek apakah ada di keranjang jika user login
+      if (user) {
+        try {
+          const cart = await api.getCart();
+          const exists = cart.items.some((c) => c.id_barang === Number(id));
+          setIsInCart(exists);
+        } catch {
+          // Ignored
+        }
+      }
     } catch (err: unknown) {
       console.error('Gagal memuat detail barang:', err);
       if (err && typeof err === 'object' && 'response' in err) {
@@ -64,7 +84,7 @@ export const ItemDetailPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [id]);
+  }, [id, user]);
 
   useEffect(() => {
     fetchItemDetail();
@@ -80,7 +100,75 @@ export const ItemDetailPage: React.FC = () => {
     }
   }, [flashMessage]);
 
-  // Handler Buka Modal PIN
+  const isOwner = Boolean(user && item && user.id_pengguna === item.penjual.id_pengguna);
+
+  // Handler Tambah/Hapus Keranjang
+  const handleToggleCart = async () => {
+    if (!item) return;
+
+    if (!user) {
+      navigate('/masuk', { state: { from: location } });
+      return;
+    }
+
+    try {
+      setIsCartSubmitting(true);
+      if (isInCart) {
+        await api.removeFromCart(item.id_barang);
+        setIsInCart(false);
+        setFlashMessage(`"${item.nama_barang}" dihapus dari keranjang incaran.`);
+      } else {
+        await api.addToCart(item.id_barang);
+        setIsInCart(true);
+        setFlashMessage(`"${item.nama_barang}" berhasil ditambahkan ke keranjang incaran!`);
+      }
+      await refreshCartCount();
+    } catch (err: any) {
+      setFlashMessage(err.response?.data?.error?.message || 'Gagal mengubah status keranjang.');
+    } finally {
+      setIsCartSubmitting(false);
+    }
+  };
+
+  // Handler Aksi Pemilik Langsung (Tanpa PIN)
+  const handleOwnerDirectAction = async (action: 'edit' | 'toggle_status' | 'delete') => {
+    if (!item) return;
+
+    if (action === 'edit') {
+      navigate(`/jual?edit=${item.id_barang}`);
+      return;
+    }
+
+    if (action === 'toggle_status') {
+      const newStatus: StatusBarang = item.status === 'Tersedia' ? 'Terjual' : 'Tersedia';
+      try {
+        const formData = new FormData();
+        formData.append('status', newStatus);
+        const updated = await api.updateItem(item.id_barang, formData);
+        setItem(updated);
+        setFlashMessage(`Status barang berhasil diubah menjadi ${newStatus}.`);
+      } catch (err: any) {
+        setFlashMessage(err.response?.data?.error?.message || 'Gagal memperbarui status barang.');
+      }
+      return;
+    }
+
+    if (action === 'delete') {
+      if (!window.confirm(`Yakin ingin menghapus "${item.nama_barang}"? Tindakan ini tidak dapat dibatalkan.`)) {
+        return;
+      }
+      try {
+        await api.deleteItem(item.id_barang);
+        navigate('/', {
+          state: { message: `Barang "${item.nama_barang}" berhasil dihapus dari WarisanKampus.` }
+        });
+      } catch (err: any) {
+        setFlashMessage(err.response?.data?.error?.message || 'Gagal menghapus barang.');
+      }
+    }
+  };
+
+  // Handler Buka Modal PIN (Fallback untuk tamu yang belum login)
   const handleOpenPinModal = (action: PinActionType) => {
     setModalAction(action);
     setModalError(null);
@@ -95,14 +183,12 @@ export const ItemDetailPage: React.FC = () => {
 
     try {
       if (modalAction === 'delete') {
-        // Hapus barang
         await api.deleteItem(item.id_barang, pin);
         setIsModalOpen(false);
         navigate('/', {
-          state: { message: `Barang "${item.nama_barang}" berhasil dihapus dari WarisanKampus.` },
+          state: { message: `Barang "${item.nama_barang}" berhasil dihapus dari WarisanKampus.` }
         });
       } else if (modalAction === 'mark_sold') {
-        // Tandai terjual
         const formData = new FormData();
         formData.append('pin', pin);
         formData.append('status', 'Terjual');
@@ -112,11 +198,9 @@ export const ItemDetailPage: React.FC = () => {
         setIsModalOpen(false);
         setFlashMessage('Status barang berhasil diperbarui menjadi Sudah Terjual.');
       } else if (modalAction === 'edit') {
-        // Coba verifikasi dengan update dummy atau langsung navigasi ke halaman edit dengan membawa PIN
-        // Karena PUT endpoint memverifikasi PIN saat submit, kita bisa bawa PIN ke form edit
         setIsModalOpen(false);
-        navigate(`/barang/${item.id_barang}/edit`, {
-          state: { pin },
+        navigate(`/jual?edit=${item.id_barang}`, {
+          state: { pin }
         });
       }
     } catch (err: unknown) {
@@ -189,7 +273,7 @@ export const ItemDetailPage: React.FC = () => {
         >
           <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-600 mt-0.5" />
           <div className="flex-1">
-            <span className="font-bold block">Berhasil:</span>
+            <span className="font-bold block">Status:</span>
             <span>{flashMessage}</span>
           </div>
         </div>
@@ -260,6 +344,12 @@ export const ItemDetailPage: React.FC = () => {
               <Badge variant={item.status} size="md">
                 Status: {item.status}
               </Badge>
+              {isOwner && (
+                <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-navy-900 text-white shadow-xs">
+                  <UserCheck className="w-3.5 h-3.5" />
+                  Barang Milik Anda
+                </span>
+              )}
             </div>
 
             {/* Judul Barang */}
@@ -316,10 +406,10 @@ export const ItemDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Kotak Kontak Penjual & Tombol WhatsApp */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          {/* Kotak Kontak Penjual & Aksi Keranjang / WhatsApp */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-5">
             <h2 className="text-sm font-bold text-navy-900 uppercase tracking-wider">
-              Kontak Pemilik Barang
+              Kontak & Pemesanan
             </h2>
 
             <div className="flex items-center gap-4">
@@ -336,75 +426,133 @@ export const ItemDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Tombol Hubungi WhatsApp */}
-            {isSold ? (
-              <div className="p-3.5 rounded-xl bg-slate-100 text-slate-500 text-xs text-center font-medium">
-                Barang sudah terjual. Kontak WhatsApp dinonaktifkan.
-              </div>
-            ) : (
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 shadow-sm transition-all min-h-[44px] focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none"
-                aria-label={`Hubungi penjual ${item.penjual.nama_lengkap} lewat WhatsApp`}
-              >
-                <MessageCircle className="w-5 h-5 flex-shrink-0" />
-                <span>Chat Penjual di WhatsApp</span>
-              </a>
-            )}
+            {/* Action Buttons: Chat WhatsApp & Simpan ke Keranjang */}
+            <div className="space-y-3 pt-2">
+              {isSold ? (
+                <div className="p-3.5 rounded-xl bg-slate-100 text-slate-500 text-xs text-center font-medium">
+                  Barang sudah terjual. Kontak WhatsApp dinonaktifkan.
+                </div>
+              ) : (
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 shadow-sm transition-all min-h-[44px] focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none"
+                  aria-label={`Hubungi penjual ${item.penjual.nama_lengkap} lewat WhatsApp`}
+                >
+                  <MessageCircle className="w-5 h-5 flex-shrink-0" />
+                  <span>Chat Penjual di WhatsApp</span>
+                </a>
+              )}
+
+              {/* Tombol Simpan ke Keranjang Incaran (Hanya jika bukan pemilik) */}
+              {!isOwner && (
+                <button
+                  type="button"
+                  onClick={handleToggleCart}
+                  disabled={isCartSubmitting}
+                  className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold border transition-all min-h-[44px] ${
+                    isInCart
+                      ? 'bg-brand-50 border-brand-300 text-brand-800 hover:bg-brand-100'
+                      : 'bg-white border-slate-300 text-slate-800 hover:border-brand-500 hover:text-brand-700'
+                  }`}
+                >
+                  {isInCart ? (
+                    <>
+                      <BookmarkCheck className="w-4 h-4 text-brand-600" />
+                      <span>Tersimpan di Keranjang Incaran</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="w-4 h-4 text-slate-600" />
+                      <span>Simpan ke Keranjang Incaran</span>
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
           </div>
 
-          {/* Bagian Manajemen Pemilik (Edit & Hapus dengan PIN) */}
+          {/* Bagian Manajemen Pemilik (Direct jika Login, PIN modal jika Tamu) */}
           <div className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/90 shadow-sm">
             <div className="flex items-center gap-2 mb-3">
-              <ShieldCheck className="w-4 h-4 text-slate-400" />
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Kelola Iklan Anda (Khusus Pemilik)
+              <ShieldCheck className="w-4 h-4 text-brand-600" />
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                {isOwner ? 'Kelola Barang Anda (Akun Terverifikasi)' : 'Kelola Iklan Anda (Khusus Pemilik)'}
               </h2>
             </div>
             <p className="text-xs text-slate-500 mb-4">
-              Gunakan PIN keamanan yang Anda buat saat memposting untuk mengubah data, menandai status terjual, atau menghapus iklan ini.
+              {isOwner
+                ? 'Anda adalah pemilik barang ini. Anda dapat mengedit, memperbarui ketersediaan, atau menghapusnya secara langsung tanpa perlu PIN.'
+                : 'Jika Anda memasang iklan ini sebagai tamu, gunakan PIN keamanan yang dibuat saat memposting untuk mengelola iklan.'}
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-              {/* Tombol Ubah */}
-              <button
-                type="button"
-                onClick={() => handleOpenPinModal('edit')}
-                className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors min-h-[44px]"
-              >
-                <Edit3 className="w-4 h-4 text-slate-500" />
-                <span>Ubah Data</span>
-              </button>
-
-              {/* Tombol Tandai Terjual */}
-              {!isSold && (
+            {isOwner ? (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <button
                   type="button"
-                  onClick={() => handleOpenPinModal('mark_sold')}
-                  className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-colors min-h-[44px]"
+                  onClick={() => handleOwnerDirectAction('edit')}
+                  className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 transition-colors min-h-[44px]"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-amber-600" />
-                  <span>Tandai Terjual</span>
+                  <Edit3 className="w-4 h-4 text-brand-600" />
+                  <span>Ubah Data</span>
                 </button>
-              )}
 
-              {/* Tombol Hapus */}
-              <button
-                type="button"
-                onClick={() => handleOpenPinModal('delete')}
-                className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors min-h-[44px]"
-              >
-                <Trash2 className="w-4 h-4 text-rose-600" />
-                <span>Hapus Iklan</span>
-              </button>
-            </div>
+                <button
+                  type="button"
+                  onClick={() => handleOwnerDirectAction('toggle_status')}
+                  className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors min-h-[44px]"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-slate-600" />
+                  <span>{isSold ? 'Tandai Tersedia' : 'Tandai Terjual'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleOwnerDirectAction('delete')}
+                  className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors min-h-[44px]"
+                >
+                  <Trash2 className="w-4 h-4 text-rose-600" />
+                  <span>Hapus Iklan</span>
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => handleOpenPinModal('edit')}
+                  className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors min-h-[44px]"
+                >
+                  <Edit3 className="w-4 h-4 text-slate-500" />
+                  <span>Ubah (PIN)</span>
+                </button>
+
+                {!isSold && (
+                  <button
+                    type="button"
+                    onClick={() => handleOpenPinModal('mark_sold')}
+                    className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-colors min-h-[44px]"
+                  >
+                    <CheckCircle2 className="w-4 h-4 text-amber-600" />
+                    <span>Tandai Terjual</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenPinModal('delete')}
+                  className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors min-h-[44px]"
+                >
+                  <Trash2 className="w-4 h-4 text-rose-600" />
+                  <span>Hapus Iklan</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Modal Verifikasi PIN */}
+      {/* Modal Verifikasi PIN (Khusus Tamu) */}
       <PinVerificationModal
         isOpen={isModalOpen}
         actionType={modalAction}

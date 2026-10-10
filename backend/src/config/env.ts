@@ -12,7 +12,8 @@ export const env = {
     USER: process.env.DB_USER || 'root',
     PASSWORD: process.env.DB_PASSWORD || '',
     NAME: process.env.DB_NAME || 'campuspreloved'
-  }
+  },
+  JWT_SECRET: process.env.JWT_SECRET || 'warisan-kampus-secret-key-2026'
 };
 
 export default env;
