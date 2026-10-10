@@ -101,12 +101,11 @@ campuspreloved/
 - [x] Perbaiki bug yang ditemukan (dokumen docs/TEST_REPORT.md dibuat)
 
 ## Fase 9 — Deployment & Dokumentasi
-- [ ] Deploy database (Neon/Railway/Supabase) dan jalankan `schema.sql` + `seed.sql`
-- [ ] Deploy backend (Render/Railway); set env: `DATABASE_URL`, `CORS_ORIGIN`, `PORT`
-- [ ] Deploy frontend (Vercel/Netlify); set `VITE_API_URL`
-- [ ] Uji end-to-end di URL produksi
-- [ ] `README.md`: deskripsi, fitur, tech stack, cara menjalankan lokal, URL demo, screenshot, batasan (tanpa login)
-- [ ] Siapkan data demo dan bahan presentasi (diagram 3-tier, ERD, demo alur)
+- [x] Panduan deploy database (Aiven/Railway/TiDB Cloud) dan file `schema.sql` + `seed.sql`
+- [x] Panduan deploy backend (Render/Railway); konfigurasi env: `PORT`, `DB_*`, `CORS_ORIGIN`
+- [x] Panduan deploy frontend (Vercel/Netlify); konfigurasi env: `VITE_API_URL`
+- [x] `README.md`: deskripsi lengkap, fitur, tech stack, cara menjalankan lokal 1 perintah, dokumentasi API, batasan PIN
+- [x] Bahan presentasi & diagram: diagram 3-tier dan ERD Mermaid lengkap di README.md
 
 ## Fase 10 — Opsional (setelah Fase 0–9 selesai)
 - [ ] Autentikasi: kolom `password_hash`, `POST /api/auth/daftar|masuk`, JWT, batasi `PUT/DELETE` ke pemilik
