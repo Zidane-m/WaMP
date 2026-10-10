@@ -19,6 +19,22 @@ app.use(express.urlencoded({ extended: true }));
 // Serve Uploads Directory
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Root & API Welcome Endpoints
+app.get(['/', '/api'], (_req: Request, res: Response) => {
+  res.status(200).json({
+    name: 'CampusPreloved Backend API',
+    status: 'online',
+    version: '1.0.0',
+    message: 'Server API CampusPreloved aktif dan siap menerima request',
+    endpoints: {
+      health: '/api/health',
+      universitas: '/api/universitas',
+      kategori: '/api/kategori',
+      barang: '/api/barang'
+    }
+  });
+});
+
 // Health Check Endpoint
 app.get('/api/health', (_req: Request, res: Response) => {
   res.status(200).json({
