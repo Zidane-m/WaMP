@@ -56,11 +56,11 @@ campuspreloved/
 **Selesai bila:** semua status code di `docs/API.md` terbukti lewat pengujian.
 
 ## Fase 4 — Frontend: Fondasi & Layout
-- [ ] Konfigurasi Tailwind (warna Emerald/Navy/Slate), font, base style
-- [ ] `lib/api.ts` (axios, base URL dari env) + tipe TypeScript dari API
-- [ ] Router: `/`, `/barang/:id`, `/jual`, `/barang/:id/edit`, `*`
-- [ ] `Header` (logo, tombol "Jual Barang", navigasi), `Footer`, layout dengan `<main>`
-- [ ] Komponen dasar: `Badge`, `Spinner`, `EmptyState`, `ErrorMessage`
+- [x] Konfigurasi Tailwind (warna Emerald/Navy/Slate), font, base style
+- [x] `lib/api.ts` (axios, base URL dari env) + tipe TypeScript dari API
+- [x] Router: `/`, `/barang/:id`, `/jual`, `/barang/:id/edit`, `*`
+- [x] `Header` (logo, tombol "Jual Barang", navigasi), `Footer`, layout dengan `<main>`
+- [x] Komponen dasar: `Badge`, `Spinner`, `EmptyState`, `ErrorMessage`
 
 **Selesai bila:** navigasi antar halaman kosong berjalan dan layout rapi di 360px & 1280px.
 

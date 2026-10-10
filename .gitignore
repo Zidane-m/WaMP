@@ -10,6 +10,7 @@ node_modules/
 dist/
 dist-ssr/
 *.local
+*.tsbuildinfo
 
 # Uploads (foto disimpan di backend/uploads)
 backend/uploads/*
