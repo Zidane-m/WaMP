@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus, Mail, Lock, User, Phone, School, Hash, AlertCircle, ArrowLeft } from 'lucide-react';
+import { UserPlus, Mail, Lock, User, Phone, School, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../lib/api';
 import { Universitas } from '../types';
@@ -15,7 +15,6 @@ export const RegisterPage: React.FC = () => {
     email: '',
     password: '',
     id_universitas: '',
-    nim: '',
     no_whatsapp: ''
   });
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +60,6 @@ export const RegisterPage: React.FC = () => {
         email: formData.email.trim(),
         password: formData.password,
         id_universitas: Number(formData.id_universitas),
-        nim: formData.nim.trim() || undefined,
         no_whatsapp: formData.no_whatsapp.trim()
       });
       navigate('/', { replace: true });
@@ -105,6 +103,7 @@ export const RegisterPage: React.FC = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Baris 1: Nama Lengkap */}
           <div>
             <label htmlFor="reg-nama" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
               Nama Lengkap Mahasiswa *
@@ -126,10 +125,11 @@ export const RegisterPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Baris 2: Email & Kata Sandi (2 Kolom Sejajar) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="reg-email" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Email *
+                Email Kampus / Pribadi *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -171,33 +171,34 @@ export const RegisterPage: React.FC = () => {
             </div>
           </div>
 
-          <div>
-            <label htmlFor="reg-univ" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-              Universitas / Kampus Asal *
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <School className="w-5 h-5" />
-              </div>
-              <select
-                id="reg-univ"
-                name="id_universitas"
-                required
-                value={formData.id_universitas}
-                onChange={handleChange}
-                className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-navy-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 min-h-[44px]"
-              >
-                <option value="">Pilih universitas Anda...</option>
-                {universitasList.map((u) => (
-                  <option key={u.id_universitas} value={u.id_universitas}>
-                    {u.nama_universitas} ({u.kota})
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
+          {/* Baris 3: Universitas & WhatsApp (2 Kolom Sejajar Simetris) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="reg-univ" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                Universitas / Kampus Asal *
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <School className="w-5 h-5" />
+                </div>
+                <select
+                  id="reg-univ"
+                  name="id_universitas"
+                  required
+                  value={formData.id_universitas}
+                  onChange={handleChange}
+                  className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-navy-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 min-h-[44px]"
+                >
+                  <option value="">Pilih universitas...</option>
+                  {universitasList.map((u) => (
+                    <option key={u.id_universitas} value={u.id_universitas}>
+                      {u.nama_universitas} ({u.kota})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <div>
               <label htmlFor="reg-wa" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                 Nomor WhatsApp *
@@ -214,26 +215,6 @@ export const RegisterPage: React.FC = () => {
                   value={formData.no_whatsapp}
                   onChange={handleChange}
                   placeholder="081234567890"
-                  className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-navy-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 min-h-[44px]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="reg-nim" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                NIM / Nomor Mahasiswa (Opsional)
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Hash className="w-5 h-5" />
-                </div>
-                <input
-                  id="reg-nim"
-                  name="nim"
-                  type="text"
-                  value={formData.nim}
-                  onChange={handleChange}
-                  placeholder="Contoh: 13521001"
                   className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-navy-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 min-h-[44px]"
                 />
               </div>
