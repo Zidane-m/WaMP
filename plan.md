@@ -26,10 +26,10 @@ campuspreloved/
 **Selesai bila:** `npm run dev` jalan di kedua folder.
 
 ## Fase 1 — Database
-- [ ] Buat database PostgreSQL `campuspreloved` (lokal atau Neon/Railway)
-- [ ] Jalankan `database/schema.sql`
-- [ ] Jalankan `database/seed.sql`
-- [ ] Verifikasi dengan query JOIN: barang + penjual + universitas + kategori
+- [x] Buat database MySQL `campuspreloved` di Laragon
+- [x] Jalankan `database/schema.sql` (skema MySQL InnoDB + pin_keamanan)
+- [x] Jalankan `database/seed.sql` (8 univ, 6 kategori, 6 penjual, 8 barang sampel)
+- [x] Verifikasi dengan query JOIN: barang + penjual + universitas + kategori
 
 **Selesai bila:** query JOIN mengembalikan data contoh dengan benar.
 

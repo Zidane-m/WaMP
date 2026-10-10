@@ -1,8 +1,7 @@
 -- CampusPreloved — Skema Basis Data MySQL (Laragon / Production)
 -- Database: campuspreloved
--- Jalankan di HeidiSQL atau MySQL CLI:
---   CREATE DATABASE IF NOT EXISTS campuspreloved;
---   USE campuspreloved;
+CREATE DATABASE IF NOT EXISTS campuspreloved;
+USE campuspreloved;
 
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS barang;
