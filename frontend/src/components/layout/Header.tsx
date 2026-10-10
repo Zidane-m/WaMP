@@ -22,6 +22,13 @@ export const Header: React.FC = () => {
     navigate('/');
   };
 
+  const handleKatalogClick = (e: React.MouseEvent) => {
+    if (isHome) {
+      e.preventDefault();
+      document.getElementById('katalog-barang')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <header className="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,6 +51,7 @@ export const Header: React.FC = () => {
           <nav className="hidden md:flex items-center gap-4">
             <Link
               to="/"
+              onClick={handleKatalogClick}
               className={`text-sm font-semibold transition-colors px-3 py-2 rounded-lg ${
                 isHome
                   ? 'text-brand-700 bg-brand-50'
@@ -205,7 +213,10 @@ export const Header: React.FC = () => {
 
           <Link
             to="/"
-            onClick={() => setIsMobileMenuOpen(false)}
+            onClick={(e) => {
+              setIsMobileMenuOpen(false);
+              handleKatalogClick(e);
+            }}
             className={`flex items-center h-12 px-4 rounded-xl text-sm font-semibold ${
               isHome
                 ? 'bg-brand-50 text-brand-700'

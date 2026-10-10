@@ -1,6 +1,15 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { PlusCircle, RefreshCw, Sparkles } from 'lucide-react';
+import {
+  PlusCircle,
+  RefreshCw,
+  GraduationCap,
+  BookOpen,
+  FlaskConical,
+  Calculator,
+  Home,
+  ChevronDown,
+} from 'lucide-react';
 import { api } from '../lib/api';
 import { Barang, Universitas, Kategori, PaginationMeta } from '../types';
 import FilterBar from '../components/items/FilterBar';
@@ -9,6 +18,7 @@ import Pagination from '../components/items/Pagination';
 
 export const HomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const catalogRef = useRef<HTMLElement | null>(null);
 
   // Parameter dari URL query
   const univParam = searchParams.get('univ') || '';
@@ -26,6 +36,14 @@ export const HomePage: React.FC = () => {
   // Status State
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Fungsi scroll halus ke katalog
+  const scrollToCatalog = () => {
+    const el = catalogRef.current || document.getElementById('katalog-barang');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   // Ambil data referensi (Universitas & Kategori) sekali saat mount
   useEffect(() => {
@@ -84,6 +102,18 @@ export const HomePage: React.FC = () => {
     fetchItems();
   }, [fetchItems]);
 
+  const hasActiveFilter = Boolean(univParam || categoryParam || searchParam);
+
+  // Otomatis gulir ke katalog jika ada filter aktif atau sedang di halaman > 1
+  useEffect(() => {
+    if (hasActiveFilter || currentPage > 1) {
+      const timer = setTimeout(() => {
+        scrollToCatalog();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [univParam, categoryParam, searchParam, currentPage, hasActiveFilter]);
+
   // Handler update filter ke URL search params
   const handleFilterChange = (newFilters: { univ?: string; category?: string; search?: string }) => {
     const updated = new URLSearchParams(searchParams);
@@ -127,12 +157,7 @@ export const HomePage: React.FC = () => {
       updated.delete('page');
     }
     setSearchParams(updated);
-
-    // Scroll halus ke bagian katalog
-    const catalogSection = document.getElementById('katalog-barang');
-    if (catalogSection) {
-      catalogSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToCatalog();
   };
 
   // Handler reset semua filter
@@ -140,116 +165,208 @@ export const HomePage: React.FC = () => {
     setSearchParams({}, { replace: true });
   };
 
-  const hasActiveFilter = Boolean(univParam || categoryParam || searchParam);
-
   // Nama universitas terpilih untuk teks header dinamis
   const selectedUnivName = univParam
     ? universities.find((u) => String(u.id_universitas) === univParam)?.nama_universitas
     : null;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 w-full flex-1">
-      {/* Hero Section */}
+    <div className="w-full flex-1 flex flex-col">
+      {/* Hero Section: Tampilan Penuh Layar Awal (Above-the-fold) */}
       <section
         aria-labelledby="hero-title"
-        className="text-center py-12 sm:py-16 px-4 sm:px-8 rounded-3xl bg-gradient-to-b from-brand-50/70 via-slate-50 to-white border border-brand-100/60 shadow-sm mb-10"
+        className="relative min-h-[calc(100vh-4rem)] flex flex-col justify-between items-center text-center px-4 sm:px-6 lg:px-8 py-8 sm:py-14 overflow-hidden bg-gradient-to-b from-brand-50/50 via-slate-50 to-white border-b border-slate-200/80"
       >
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-100 text-brand-800 mb-5 shadow-xs">
-          <Sparkles className="w-3.5 h-3.5 text-brand-600" />
-          <span>WarisanKampus: Estafet Barang Mahasiswa Lintas Kampus</span>
+        {/* Dekorasi Latar: Ornamen Pencahayaan Kampus Halus */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-brand-200/30 blur-3xl" />
+          <div className="absolute top-1/3 -right-24 w-96 h-96 rounded-full bg-navy-200/25 blur-3xl" />
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-200 to-transparent" />
         </div>
 
-        <h1
-          id="hero-title"
-          className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-navy-900 tracking-tight mb-4 max-w-3xl mx-auto leading-tight"
+        {/* Kartu Cuplikan Barang Mahasiswa (Desktop Sisi Kiri & Kanan - Kontekstual & Tanpa Animasi Berputar) */}
+        {/* Kiri Atas: Buku Kuliah */}
+        <div
+          className="hidden lg:flex absolute top-16 left-8 xl:left-16 items-center gap-3 p-3 bg-white/90 backdrop-blur-xs rounded-2xl border border-slate-200/90 shadow-xs max-w-[210px] text-left transition-transform hover:-translate-y-1"
+          aria-hidden="true"
         >
-          Warisan Barang Preloved, Barter, dan Hibah Kampus
-        </h1>
+          <div className="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
+            <BookOpen className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-xs font-bold text-navy-900 leading-tight">Buku & Diktat</p>
+            <p className="text-[11px] text-slate-500">Hemat s.d. 70%</p>
+          </div>
+        </div>
 
-        <p className="text-slate-600 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-          Teruskan buku kuliah, jas lab, kalkulator saintifik, hingga perlengkapan kos layak pakai ke adik tingkat dan sesama mahasiswa di sekitarmu.
-        </p>
+        {/* Kiri Bawah: Jas Praktikum Lab */}
+        <div
+          className="hidden lg:flex absolute bottom-24 left-10 xl:left-20 items-center gap-3 p-3 bg-white/90 backdrop-blur-xs rounded-2xl border border-slate-200/90 shadow-xs max-w-[210px] text-left transition-transform hover:-translate-y-1"
+          aria-hidden="true"
+        >
+          <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+            <FlaskConical className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-xs font-bold text-navy-900 leading-tight">Jas Praktikum</p>
+            <p className="text-[11px] text-slate-500">Kondisi siap pakai</p>
+          </div>
+        </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-          <Link
-            to="/jual"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white shadow-sm transition-all min-h-[44px]"
+        {/* Kanan Atas: Kalkulator Saintifik */}
+        <div
+          className="hidden lg:flex absolute top-20 right-8 xl:right-16 items-center gap-3 p-3 bg-white/90 backdrop-blur-xs rounded-2xl border border-slate-200/90 shadow-xs max-w-[210px] text-left transition-transform hover:-translate-y-1"
+          aria-hidden="true"
+        >
+          <div className="w-10 h-10 rounded-xl bg-navy-100 text-navy-700 flex items-center justify-center shrink-0">
+            <Calculator className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-xs font-bold text-navy-900 leading-tight">Kalkulator Saintifik</p>
+            <p className="text-[11px] text-slate-500">Teknik & Sains</p>
+          </div>
+        </div>
+
+        {/* Kanan Bawah: Perlengkapan Kos */}
+        <div
+          className="hidden lg:flex absolute bottom-28 right-10 xl:right-20 items-center gap-3 p-3 bg-white/90 backdrop-blur-xs rounded-2xl border border-slate-200/90 shadow-xs max-w-[210px] text-left transition-transform hover:-translate-y-1"
+          aria-hidden="true"
+        >
+          <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+            <Home className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-xs font-bold text-navy-900 leading-tight">Perlengkapan Kos</p>
+            <p className="text-[11px] text-slate-500">Estafet adik tingkat</p>
+          </div>
+        </div>
+
+        {/* Pembatas Ruang Atas */}
+        <div className="w-full h-2 sm:h-4" />
+
+        {/* Inti Konten Hero */}
+        <div className="max-w-3xl mx-auto z-10 my-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-100/90 text-brand-800 mb-6 border border-brand-200/60 shadow-xs">
+            <GraduationCap className="w-4 h-4 text-brand-600" />
+            <span>Estafet Barang Mahasiswa Lintas Kampus</span>
+          </div>
+
+          <h1
+            id="hero-title"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-navy-900 tracking-tight mb-5 leading-[1.15]"
           >
-            <PlusCircle className="w-4 h-4" />
-            <span>Pasang Iklan Barang</span>
-          </Link>
+            Warisan Barang Preloved, Barter, dan Hibah Kampus
+          </h1>
 
-          <a
-            href="#katalog-barang"
-            className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl text-sm font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all min-h-[44px]"
+          <p className="text-slate-600 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-9 leading-relaxed">
+            Teruskan buku kuliah, jas lab, kalkulator saintifik, hingga perlengkapan kos layak pakai ke adik tingkat dan sesama mahasiswa di sekitarmu.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <Link
+              to="/jual"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-bold bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white shadow-sm hover:shadow transition-all min-h-[44px]"
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span>Pasang Iklan Barang</span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={scrollToCatalog}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-navy-900 active:bg-slate-100 transition-all min-h-[44px]"
+            >
+              <span>Jelajahi Katalog</span>
+              <ChevronDown className="w-4 h-4 text-slate-500" />
+            </button>
+          </div>
+        </div>
+
+        {/* Indikator Gulir Bawah */}
+        <div className="z-10 pt-6 pb-2">
+          <button
+            type="button"
+            onClick={scrollToCatalog}
+            className="group inline-flex flex-col items-center gap-1.5 text-slate-500 hover:text-brand-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 rounded-xl p-2 min-h-[44px]"
+            aria-label="Gulir ke katalog barang"
           >
-            <span>Jelajahi Katalog</span>
-          </a>
+            <span className="text-xs font-semibold tracking-wide">Lihat Katalog Barang</span>
+            <div className="w-8 h-8 rounded-full border border-slate-200 bg-white/90 group-hover:border-brand-300 group-hover:bg-brand-50 flex items-center justify-center transition-all group-hover:translate-y-1">
+              <ChevronDown className="w-4 h-4" />
+            </div>
+          </button>
         </div>
       </section>
 
       {/* Bagian Katalog Barang */}
-      <section id="katalog-barang" aria-labelledby="catalog-heading" className="scroll-mt-20">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
-          <div>
-            <h2 id="catalog-heading" className="text-2xl sm:text-3xl font-bold text-navy-900 tracking-tight">
-              {selectedUnivName ? `Barang di ${selectedUnivName}` : 'Daftar Barang Tersedia'}
-            </h2>
-            <p className="text-slate-500 text-xs sm:text-sm mt-1">
-              {isLoading
-                ? 'Sedang menyinkronkan data dengan server...'
-                : pagination
-                ? `Menampilkan ${items.length} dari total ${pagination.total} barang`
-                : 'Pilih filter untuk mempersempit pencarian'}
-            </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 w-full">
+        <section
+          ref={catalogRef}
+          id="katalog-barang"
+          aria-labelledby="catalog-heading"
+          className="scroll-mt-20"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+            <div>
+              <h2 id="catalog-heading" className="text-2xl sm:text-3xl font-bold text-navy-900 tracking-tight">
+                {selectedUnivName ? `Barang di ${selectedUnivName}` : 'Daftar Barang Tersedia'}
+              </h2>
+              <p className="text-slate-500 text-xs sm:text-sm mt-1">
+                {isLoading
+                  ? 'Sedang menyinkronkan data dengan server...'
+                  : pagination
+                  ? `Menampilkan ${items.length} dari total ${pagination.total} barang`
+                  : 'Pilih filter untuk mempersempit pencarian'}
+              </p>
+            </div>
+
+            {/* Tombol Segarkan */}
+            <button
+              type="button"
+              onClick={fetchItems}
+              disabled={isLoading}
+              className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-navy-900 hover:bg-slate-100 transition-colors disabled:opacity-50 min-h-[44px]"
+              title="Segarkan daftar barang"
+              aria-label="Segarkan daftar barang"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-brand-600' : ''}`} />
+              <span>Segarkan</span>
+            </button>
           </div>
 
-          {/* Tombol Segarkan */}
-          <button
-            type="button"
-            onClick={fetchItems}
-            disabled={isLoading}
-            className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-navy-900 hover:bg-slate-100 transition-colors disabled:opacity-50 min-h-[44px]"
-            title="Segarkan daftar barang"
-            aria-label="Segarkan daftar barang"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-brand-600' : ''}`} />
-            <span>Segarkan</span>
-          </button>
-        </div>
-
-        {/* Bilah Filter dan Pencarian */}
-        <FilterBar
-          universities={universities}
-          categories={categories}
-          selectedUniv={univParam}
-          selectedCategory={categoryParam}
-          searchQuery={searchParam}
-          onFilterChange={handleFilterChange}
-          onReset={handleResetFilter}
-          isLoading={isLoading}
-        />
-
-        {/* Grid Katalog Barang */}
-        <ItemGrid
-          items={items}
-          isLoading={isLoading}
-          error={error}
-          onRetry={fetchItems}
-          onResetFilter={handleResetFilter}
-          hasActiveFilter={hasActiveFilter}
-        />
-
-        {/* Paginasi */}
-        {pagination && pagination.total_pages > 1 && !isLoading && (
-          <Pagination
-            currentPage={pagination.page}
-            totalPages={pagination.total_pages}
-            onPageChange={handlePageChange}
+          {/* Bilah Filter dan Pencarian */}
+          <FilterBar
+            universities={universities}
+            categories={categories}
+            selectedUniv={univParam}
+            selectedCategory={categoryParam}
+            searchQuery={searchParam}
+            onFilterChange={handleFilterChange}
+            onReset={handleResetFilter}
             isLoading={isLoading}
           />
-        )}
-      </section>
+
+          {/* Grid Katalog Barang */}
+          <ItemGrid
+            items={items}
+            isLoading={isLoading}
+            error={error}
+            onRetry={fetchItems}
+            onResetFilter={handleResetFilter}
+            hasActiveFilter={hasActiveFilter}
+          />
+
+          {/* Paginasi */}
+          {pagination && pagination.total_pages > 1 && !isLoading && (
+            <Pagination
+              currentPage={pagination.page}
+              totalPages={pagination.total_pages}
+              onPageChange={handlePageChange}
+              isLoading={isLoading}
+            />
+          )}
+        </section>
+      </div>
     </div>
   );
 };
