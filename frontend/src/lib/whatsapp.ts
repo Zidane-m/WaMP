@@ -23,7 +23,7 @@ export function buildWhatsAppLink(
   }
 
   const greeting = sellerName ? `Halo kak ${sellerName}` : 'Halo kak';
-  const text = `${greeting}, saya tertarik dengan barang "${itemName}" (${priceLabel}) yang diposting di CampusPreloved. Apakah barangnya masih tersedia untuk COD di kampus?`;
+  const text = `${greeting}, saya tertarik dengan barang "${itemName}" (${priceLabel}) yang diposting di WarisanKampus. Apakah barangnya masih tersedia untuk COD di kampus?`;
 
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
 }

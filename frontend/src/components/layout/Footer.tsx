@@ -13,10 +13,10 @@ export const Footer: React.FC = () => {
               <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white">
                 <ShoppingBag className="w-4 h-4" />
               </div>
-              <span className="text-lg font-bold text-navy-900">CampusPreloved</span>
+              <span className="text-lg font-bold text-navy-900">WarisanKampus</span>
             </div>
             <p className="text-sm text-slate-500 leading-relaxed">
-              Wadah jual beli barang bekas layak pakai, barter, dan hibah gratis antar mahasiswa lintas universitas di Indonesia.
+              Platform estafet barang bekas layak pakai, barter, dan hibah gratis antar mahasiswa lintas universitas di Indonesia.
             </p>
           </div>
 
@@ -55,7 +55,7 @@ export const Footer: React.FC = () => {
 
         <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <p>
-            &copy; {new Date().getFullYear()} CampusPreloved. Hak Cipta Dilindungi.
+            &copy; {new Date().getFullYear()} WarisanKampus. Hak Cipta Dilindungi.
           </p>
           <p className="flex items-center gap-1 text-slate-500">
             Dibuat dengan <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> untuk mahasiswa Indonesia

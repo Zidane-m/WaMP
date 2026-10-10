@@ -75,10 +75,10 @@ campuspreloved/
 **Selesai bila:** mengubah universitas/kategori/kata kunci memperbarui grid dengan benar, dan refresh halaman mempertahankan filter.
 
 ## Fase 6 — Frontend: Form Posting
-- [ ] Form `<form>` semantik: nama, deskripsi, jenis transaksi, harga (nonaktif jika Barter/Hibah), kondisi, kategori, kampus, foto, data penjual (nama, email, NIM, WA)
-- [ ] Validasi HTML5 + JS (react-hook-form): wajib isi, panjang, format email & nomor WA, harga ≥ 0, ukuran/tipe foto
-- [ ] Pratinjau foto, kirim `multipart/form-data`
-- [ ] Tampilkan error server (400) per field; setelah sukses arahkan ke detail barang
+- [x] Form `<form>` semantik: nama, deskripsi, jenis transaksi, harga (nonaktif jika Barter/Hibah), kondisi, kategori, kampus, foto, data penjual (nama, email, WA), PIN keamanan
+- [x] Validasi HTML5 + JS (react-hook-form): wajib isi, panjang, format email & nomor WA, harga ≥ 0, ukuran/tipe foto
+- [x] Pratinjau foto, kirim `multipart/form-data`
+- [x] Tampilkan error server (400) per field; setelah sukses arahkan ke detail barang
 
 **Selesai bila:** barang baru muncul di katalog, dan input tidak valid tertahan di client.
 

@@ -156,18 +156,18 @@ export const HomePage: React.FC = () => {
       >
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-100 text-brand-800 mb-5 shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-brand-600" />
-          <span>Pasar Preloved Mahasiswa Lintas Kampus</span>
+          <span>WarisanKampus: Estafet Barang Mahasiswa Lintas Kampus</span>
         </div>
 
         <h1
           id="hero-title"
           className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-navy-900 tracking-tight mb-4 max-w-3xl mx-auto leading-tight"
         >
-          Katalog Preloved, Barter, dan Hibah Kampus
+          Warisan Barang Preloved, Barter, dan Hibah Kampus
         </h1>
 
         <p className="text-slate-600 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-          Temukan buku kuliah, jas lab, kalkulator saintifik, kos perlengkapan, hingga elektronik bekas berkualitas langsung dari mahasiswa universitas di sekitarmu.
+          Teruskan buku kuliah, jas lab, kalkulator saintifik, hingga perlengkapan kos layak pakai ke adik tingkat dan sesama mahasiswa di sekitarmu.
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">

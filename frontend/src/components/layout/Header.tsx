@@ -22,8 +22,8 @@ export const Header: React.FC = () => {
               <ShoppingBag className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-xl font-extrabold text-navy-900 tracking-tight">Campus</span>
-              <span className="text-xl font-extrabold text-brand-600 tracking-tight">Preloved</span>
+              <span className="text-xl font-extrabold text-navy-900 tracking-tight">Warisan</span>
+              <span className="text-xl font-extrabold text-brand-600 tracking-tight">Kampus</span>
             </div>
           </Link>
 
