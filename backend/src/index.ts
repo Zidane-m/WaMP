@@ -1,10 +1,18 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import app from './app';
+import { env } from './config/env';
+import { checkDatabaseConnection } from './db/pool';
 
-const PORT = process.env.PORT || 4000;
+async function startServer() {
+  const isDbConnected = await checkDatabaseConnection();
+  if (isDbConnected) {
+    console.log('[CampusPreloved Backend] Koneksi ke MySQL Laragon berhasil terhubung.');
+  } else {
+    console.warn('[CampusPreloved Backend] Peringatan: Tidak dapat terhubung ke MySQL.');
+  }
 
-app.listen(PORT, () => {
-  console.log(`[CampusPreloved Backend] Server berjalan di http://localhost:${PORT}`);
-});
+  app.listen(env.PORT, () => {
+    console.log(`[CampusPreloved Backend] Server berjalan di http://localhost:${env.PORT}`);
+  });
+}
+
+startServer();

@@ -1,19 +1,28 @@
 import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { env } from '../config/env';
 
 export const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  port: Number(process.env.DB_PORT) || 3306,
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'campuspreloved',
+  host: env.DB.HOST,
+  port: env.DB.PORT,
+  user: env.DB.USER,
+  password: env.DB.PASSWORD,
+  database: env.DB.NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  multipleStatements: true,
   dateStrings: true
 });
+
+export async function checkDatabaseConnection(): Promise<boolean> {
+  try {
+    const connection = await pool.getConnection();
+    await connection.ping();
+    connection.release();
+    return true;
+  } catch (error) {
+    console.error('[Database Error] Gagal terhubung ke MySQL:', error);
+    return false;
+  }
+}
 
 export default pool;

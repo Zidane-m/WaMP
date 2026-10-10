@@ -34,11 +34,11 @@ campuspreloved/
 **Selesai bila:** query JOIN mengembalikan data contoh dengan benar.
 
 ## Fase 2 — Backend Dasar
-- [ ] Struktur `src/`: `config/`, `db/`, `routes/`, `controllers/`, `services/`, `middleware/`, `validations/`
-- [ ] Koneksi pool `pg` + cek koneksi saat start
-- [ ] Middleware: `helmet`, `cors` (origin dari env), `express.json`, error handler global, 404 handler
-- [ ] `GET /api/universitas` dan `GET /api/kategori`
-- [ ] Endpoint `GET /api/health`
+- [x] Struktur `src/`: `config/`, `db/`, `routes/`, `controllers/`, `services/`, `middleware/`, `validations/`
+- [x] Koneksi pool MySQL Laragon + cek koneksi saat start server
+- [x] Middleware: `helmet`, `cors` (origin dari env), `express.json`, error handler global, 404 handler
+- [x] `GET /api/universitas` dan `GET /api/kategori`
+- [x] Endpoint `GET /api/health`
 
 **Selesai bila:** kedua endpoint referensi mengembalikan 200 dan data seed.
 

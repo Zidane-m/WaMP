@@ -1,18 +1,26 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import path from 'path';
+
+import { env } from './config/env';
+import universitasRoutes from './routes/universitasRoutes';
+import kategoriRoutes from './routes/kategoriRoutes';
+import { notFoundHandler } from './middleware/notFoundHandler';
+import { errorHandler } from './middleware/errorHandler';
 
 const app: Application = express();
 
 // Security & Core Middleware
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
 }));
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: env.CORS_ORIGIN,
   credentials: true
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -44,23 +52,12 @@ app.get('/api/health', (_req: Request, res: Response) => {
   });
 });
 
-// 404 Not Found Handler
-app.use((_req: Request, res: Response) => {
-  res.status(404).json({
-    error: {
-      message: 'Rute tidak ditemukan'
-    }
-  });
-});
+// Master Data Routes
+app.use('/api/universitas', universitasRoutes);
+app.use('/api/kategori', kategoriRoutes);
 
-// Global Error Handler
-app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error('[Unhandled Error]:', err);
-  res.status(500).json({
-    error: {
-      message: 'Terjadi kesalahan internal pada server'
-    }
-  });
-});
+// 404 & Centralized Error Handler
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;
