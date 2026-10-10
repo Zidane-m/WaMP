@@ -82,4 +82,14 @@ export async function deleteBarang(
   });
 }
 
+export const api = {
+  getUniversities: fetchUniversitas,
+  getCategories: fetchKategori,
+  getItems: fetchBarang,
+  getItemById: fetchBarangDetail,
+  createItem: createBarang,
+  updateItem: updateBarang,
+  deleteItem: deleteBarang,
+};
+
 export default apiClient;

@@ -65,12 +65,12 @@ campuspreloved/
 **Selesai bila:** navigasi antar halaman kosong berjalan dan layout rapi di 360px & 1280px.
 
 ## Fase 5 — Frontend: Katalog + Filter
-- [ ] `FilterBar`: `<select>` Universitas, `<select>` Kategori (dari API), input pencarian (debounce)
-- [ ] `ItemCard`: foto (lazy), badge universitas & kategori, nama, harga/label Barter/Gratis, tombol WA
-- [ ] `ItemGrid` responsif (1 / 2 / 3–4 kolom)
-- [ ] Hubungkan filter ke URL query dan ke `GET /api/barang`
-- [ ] State loading / kosong / error; paginasi atau "muat lebih banyak"
-- [ ] Fungsi helper `buildWhatsAppLink(no, namaBarang)`
+- [x] `FilterBar`: `<select>` Universitas, `<select>` Kategori (dari API), input pencarian (debounce)
+- [x] `ItemCard`: foto (lazy), badge universitas & kategori, nama, harga/label Barter/Gratis, tombol WA
+- [x] `ItemGrid` responsif (1 / 2 / 3–4 kolom)
+- [x] Hubungkan filter ke URL query dan ke `GET /api/barang`
+- [x] State loading / kosong / error; paginasi atau "muat lebih banyak"
+- [x] Fungsi helper `buildWhatsAppLink(no, namaBarang)`
 
 **Selesai bila:** mengubah universitas/kategori/kata kunci memperbarui grid dengan benar, dan refresh halaman mempertahankan filter.
 
