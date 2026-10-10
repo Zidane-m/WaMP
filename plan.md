@@ -83,11 +83,11 @@ campuspreloved/
 **Selesai bila:** barang baru muncul di katalog, dan input tidak valid tertahan di client.
 
 ## Fase 7 — Frontend: Detail, Ubah, Hapus
-- [ ] Halaman detail: foto, info lengkap, penjual, tombol WA, badge status
-- [ ] Halaman ubah (form prefilled), tombol "Tandai Terjual"
-- [ ] Hapus dengan `ConfirmDialog`
-- [ ] Penanganan 404 (barang tidak ada)
-- [ ] Barang `Terjual` ditampilkan berbeda (badge, tombol WA nonaktif)
+- [x] Halaman detail: foto, info lengkap, penjual, tombol WA, badge status
+- [x] Halaman ubah (form prefilled), tombol "Tandai Terjual"
+- [x] Hapus dengan `ConfirmDialog` / `PinVerificationModal`
+- [x] Penanganan 404 (barang tidak ada)
+- [x] Barang `Terjual` ditampilkan berbeda (badge, tombol WA nonaktif)
 
 **Selesai bila:** siklus buat → lihat → ubah → tandai terjual → hapus berjalan.
 
