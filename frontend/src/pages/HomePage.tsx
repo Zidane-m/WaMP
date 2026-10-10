@@ -4,10 +4,6 @@ import {
   PlusCircle,
   RefreshCw,
   GraduationCap,
-  BookOpen,
-  FlaskConical,
-  Calculator,
-  Home,
   ChevronDown,
 } from 'lucide-react';
 import { api } from '../lib/api';
@@ -182,63 +178,6 @@ export const HomePage: React.FC = () => {
           <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-brand-200/30 blur-3xl" />
           <div className="absolute top-1/3 -right-24 w-96 h-96 rounded-full bg-navy-200/25 blur-3xl" />
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-200 to-transparent" />
-        </div>
-
-        {/* Kartu Cuplikan Barang Mahasiswa (Desktop Sisi Kiri & Kanan - Kontekstual & Tanpa Animasi Berputar) */}
-        {/* Kiri Atas: Buku Kuliah */}
-        <div
-          className="hidden lg:flex absolute top-16 left-8 xl:left-16 items-center gap-3 p-3 bg-white/90 backdrop-blur-xs rounded-2xl border border-slate-200/90 shadow-xs max-w-[210px] text-left transition-transform hover:-translate-y-1"
-          aria-hidden="true"
-        >
-          <div className="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
-            <BookOpen className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-navy-900 leading-tight">Buku & Diktat</p>
-            <p className="text-[11px] text-slate-500">Hemat s.d. 70%</p>
-          </div>
-        </div>
-
-        {/* Kiri Bawah: Jas Praktikum Lab */}
-        <div
-          className="hidden lg:flex absolute bottom-24 left-10 xl:left-20 items-center gap-3 p-3 bg-white/90 backdrop-blur-xs rounded-2xl border border-slate-200/90 shadow-xs max-w-[210px] text-left transition-transform hover:-translate-y-1"
-          aria-hidden="true"
-        >
-          <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-            <FlaskConical className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-navy-900 leading-tight">Jas Praktikum</p>
-            <p className="text-[11px] text-slate-500">Kondisi siap pakai</p>
-          </div>
-        </div>
-
-        {/* Kanan Atas: Kalkulator Saintifik */}
-        <div
-          className="hidden lg:flex absolute top-20 right-8 xl:right-16 items-center gap-3 p-3 bg-white/90 backdrop-blur-xs rounded-2xl border border-slate-200/90 shadow-xs max-w-[210px] text-left transition-transform hover:-translate-y-1"
-          aria-hidden="true"
-        >
-          <div className="w-10 h-10 rounded-xl bg-navy-100 text-navy-700 flex items-center justify-center shrink-0">
-            <Calculator className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-navy-900 leading-tight">Kalkulator Saintifik</p>
-            <p className="text-[11px] text-slate-500">Teknik & Sains</p>
-          </div>
-        </div>
-
-        {/* Kanan Bawah: Perlengkapan Kos */}
-        <div
-          className="hidden lg:flex absolute bottom-28 right-10 xl:right-20 items-center gap-3 p-3 bg-white/90 backdrop-blur-xs rounded-2xl border border-slate-200/90 shadow-xs max-w-[210px] text-left transition-transform hover:-translate-y-1"
-          aria-hidden="true"
-        >
-          <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-            <Home className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-navy-900 leading-tight">Perlengkapan Kos</p>
-            <p className="text-[11px] text-slate-500">Estafet adik tingkat</p>
-          </div>
         </div>
 
         {/* Pembatas Ruang Atas */}
