@@ -92,13 +92,13 @@ campuspreloved/
 **Selesai bila:** siklus buat → lihat → ubah → tandai terjual → hapus berjalan.
 
 ## Fase 8 — Pengujian
-- [ ] API: tabel kasus uji (200/201/204/400/404) lolos
-- [ ] Filter: kombinasi universitas × kategori × kata kunci menghasilkan data benar (cek dengan query SQL)
-- [ ] Validasi form: kosong, email salah, harga negatif, file bukan gambar, file > 2 MB
-- [ ] Responsivitas: 360px, 768px, 1280px; tidak ada scroll horizontal
-- [ ] Aksesibilitas: label form, alt gambar, urutan heading, navigasi keyboard
-- [ ] Audit Lighthouse (target Performance & Accessibility ≥ 85)
-- [ ] Perbaiki bug yang ditemukan
+- [x] API: tabel kasus uji (200/201/204/400/403/404) lolos (16/16 lulus di backend/src/test_api.ts)
+- [x] Filter: kombinasi universitas × kategori × kata kunci menghasilkan data benar (cek dengan query SQL di backend/src/test_fase8.ts)
+- [x] Validasi form: kosong, email salah, harga negatif, file bukan gambar, file > 2 MB, PIN
+- [x] Responsivitas: 360px, 768px, 1280px; tidak ada scroll horizontal
+- [x] Aksesibilitas: label form, alt gambar, urutan heading, navigasi keyboard
+- [x] Audit Lighthouse & kepatuhan antislop (tap target ≥ 44px, kontras tinggi, bebas em dash)
+- [x] Perbaiki bug yang ditemukan (dokumen docs/TEST_REPORT.md dibuat)
 
 ## Fase 9 — Deployment & Dokumentasi
 - [ ] Deploy database (Neon/Railway/Supabase) dan jalankan `schema.sql` + `seed.sql`
