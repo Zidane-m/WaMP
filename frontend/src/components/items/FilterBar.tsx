@@ -105,11 +105,24 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 className="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white text-slate-800 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:border-brand-500 min-h-[44px] transition-colors"
               >
                 <option value="">Semua Universitas ({universities.length} Kampus)</option>
-                {universities.map((u) => (
-                  <option key={u.id_universitas} value={String(u.id_universitas)}>
-                    {u.nama_universitas} ({u.kota})
-                  </option>
-                ))}
+                {(() => {
+                  const grouped = universities.reduce<Record<string, Universitas[]>>((acc, u) => {
+                    const region = u.provinsi || 'Lainnya';
+                    if (!acc[region]) acc[region] = [];
+                    acc[region].push(u);
+                    return acc;
+                  }, {});
+
+                  return Object.entries(grouped).map(([region, univList]) => (
+                    <optgroup key={region} label={`Wilayah: ${region}`}>
+                      {univList.map((u) => (
+                        <option key={u.id_universitas} value={String(u.id_universitas)}>
+                          {u.nama_universitas} ({u.kota})
+                        </option>
+                      ))}
+                    </optgroup>
+                  ));
+                })()}
               </select>
             </div>
           </div>

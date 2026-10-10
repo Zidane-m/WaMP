@@ -3,16 +3,61 @@
 
 USE campuspreloved;
 
--- 1. Data Universitas
-INSERT INTO universitas (id_universitas, nama_universitas, kota) VALUES
-  (1, 'Institut Teknologi Bandung', 'Bandung'),
-  (2, 'Universitas Padjadjaran', 'Bandung'),
-  (3, 'Universitas Telkom', 'Bandung'),
-  (4, 'Universitas Indonesia', 'Depok'),
-  (5, 'Universitas Gadjah Mada', 'Yogyakarta'),
-  (6, 'Institut Pertanian Bogor', 'Bogor'),
-  (7, 'Institut Teknologi Sepuluh Nopember', 'Surabaya'),
-  (8, 'Universitas Brawijaya', 'Malang');
+-- 1. Data Universitas (40 Perguruan Tinggi Terkemuka di Indonesia)
+INSERT INTO universitas (id_universitas, nama_universitas, kota, provinsi) VALUES
+  -- Jawa Barat
+  (1, 'Institut Teknologi Bandung', 'Bandung', 'Jawa Barat'),
+  (2, 'Universitas Padjadjaran', 'Bandung', 'Jawa Barat'),
+  (3, 'Universitas Telkom', 'Bandung', 'Jawa Barat'),
+  (6, 'Institut Pertanian Bogor', 'Bogor', 'Jawa Barat'),
+  (9, 'Universitas Pendidikan Indonesia', 'Bandung', 'Jawa Barat'),
+  (10, 'Universitas Katolik Parahyangan', 'Bandung', 'Jawa Barat'),
+  (11, 'Universitas Pasundan', 'Bandung', 'Jawa Barat'),
+  (12, 'Universitas Siliwangi', 'Tasikmalaya', 'Jawa Barat'),
+  (13, 'Politeknik Negeri Bandung', 'Bandung', 'Jawa Barat'),
+  (14, 'Universitas Swadaya Gunung Jati', 'Cirebon', 'Jawa Barat'),
+  
+  -- DKI Jakarta & Banten
+  (4, 'Universitas Indonesia', 'Depok', 'DKI Jakarta & Banten'),
+  (15, 'Universitas Negeri Jakarta', 'Jakarta', 'DKI Jakarta & Banten'),
+  (16, 'UIN Syarif Hidayatullah', 'Tangerang Selatan', 'DKI Jakarta & Banten'),
+  (17, 'Universitas Bina Nusantara', 'Jakarta', 'DKI Jakarta & Banten'),
+  (18, 'Universitas Trisakti', 'Jakarta', 'DKI Jakarta & Banten'),
+  (19, 'Universitas Tarumanagara', 'Jakarta', 'DKI Jakarta & Banten'),
+  (20, 'Universitas Sultan Ageng Tirtayasa', 'Serang', 'DKI Jakarta & Banten'),
+  
+  -- DI Yogyakarta
+  (5, 'Universitas Gadjah Mada', 'Yogyakarta', 'DI Yogyakarta'),
+  (21, 'Universitas Negeri Yogyakarta', 'Yogyakarta', 'DI Yogyakarta'),
+  (22, 'Universitas Islam Indonesia', 'Yogyakarta', 'DI Yogyakarta'),
+  (23, 'Universitas Muhammadiyah Yogyakarta', 'Yogyakarta', 'DI Yogyakarta'),
+  (24, 'Universitas Atma Jaya Yogyakarta', 'Yogyakarta', 'DI Yogyakarta'),
+  
+  -- Jawa Tengah
+  (25, 'Universitas Diponegoro', 'Semarang', 'Jawa Tengah'),
+  (26, 'Universitas Sebelas Maret', 'Surakarta', 'Jawa Tengah'),
+  (27, 'Universitas Negeri Semarang', 'Semarang', 'Jawa Tengah'),
+  (28, 'Universitas Jenderal Soedirman', 'Purwokerto', 'Jawa Tengah'),
+  (29, 'Universitas Dian Nuswantoro', 'Semarang', 'Jawa Tengah'),
+  
+  -- Jawa Timur
+  (7, 'Institut Teknologi Sepuluh Nopember', 'Surabaya', 'Jawa Timur'),
+  (8, 'Universitas Brawijaya', 'Malang', 'Jawa Timur'),
+  (30, 'Universitas Airlangga', 'Surabaya', 'Jawa Timur'),
+  (31, 'Universitas Negeri Malang', 'Malang', 'Jawa Timur'),
+  (32, 'Universitas Jember', 'Jember', 'Jawa Timur'),
+  (33, 'UPN Veteran Jawa Timur', 'Surabaya', 'Jawa Timur'),
+  
+  -- Sumatera
+  (34, 'Universitas Sumatera Utara', 'Medan', 'Sumatera'),
+  (35, 'Universitas Andalas', 'Padang', 'Sumatera'),
+  (36, 'Universitas Sriwijaya', 'Palembang', 'Sumatera'),
+  (37, 'Universitas Syiah Kuala', 'Banda Aceh', 'Sumatera'),
+  (38, 'Universitas Lampung', 'Bandar Lampung', 'Sumatera'),
+  
+  -- Bali, Nusa Tenggara, & Sulawesi
+  (39, 'Universitas Udayana', 'Denpasar', 'Bali & Nusa Tenggara'),
+  (40, 'Universitas Hasanuddin', 'Makassar', 'Sulawesi');
 
 -- 2. Data Kategori
 INSERT INTO kategori (id_kategori, nama_kategori) VALUES

@@ -14,7 +14,8 @@ SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE universitas (
     id_universitas    INT AUTO_INCREMENT PRIMARY KEY,
     nama_universitas  VARCHAR(100) NOT NULL UNIQUE,
-    kota              VARCHAR(50)  NOT NULL
+    kota              VARCHAR(50)  NOT NULL,
+    provinsi          VARCHAR(50)  NOT NULL DEFAULT 'Jawa Barat'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 2. Tabel Pengguna (Penjual)

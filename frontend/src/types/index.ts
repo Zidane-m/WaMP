@@ -2,6 +2,7 @@ export interface Universitas {
   id_universitas: number;
   nama_universitas: string;
   kota: string;
+  provinsi?: string;
 }
 
 export interface Kategori {
