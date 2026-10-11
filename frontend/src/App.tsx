@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import MyItemsPage from './pages/MyItemsPage';
 import CartPage from './pages/CartPage';
+import AboutPage from './pages/AboutPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { AuthProvider } from './context/AuthContext';
 
@@ -22,6 +23,7 @@ export const App: React.FC = () => {
             <Route path="barang/:id" element={<ItemDetailPage />} />
             <Route path="barang/:id/edit" element={<ItemEditPage />} />
             <Route path="jual" element={<ItemFormPage />} />
+            <Route path="tentang" element={<AboutPage />} />
             <Route path="masuk" element={<LoginPage />} />
             <Route path="daftar" element={<RegisterPage />} />
             <Route path="barang-saya" element={<MyItemsPage />} />

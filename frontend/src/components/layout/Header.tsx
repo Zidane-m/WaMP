@@ -14,6 +14,7 @@ export const Header: React.FC = () => {
   const isJual = location.pathname === '/jual';
   const isCart = location.pathname === '/keranjang';
   const isMyItems = location.pathname === '/barang-saya';
+  const isAbout = location.pathname === '/tentang';
 
   const handleLogout = () => {
     setIsUserMenuOpen(false);
@@ -59,6 +60,17 @@ export const Header: React.FC = () => {
               }`}
             >
               Katalog
+            </Link>
+
+            <Link
+              to="/tentang"
+              className={`text-sm font-semibold transition-colors px-3 py-2 rounded-lg ${
+                isAbout
+                  ? 'text-brand-700 bg-brand-50'
+                  : 'text-slate-600 hover:text-navy-900 hover:bg-slate-50'
+              }`}
+            >
+              Tentang
             </Link>
 
             {/* Keranjang Incaran */}
@@ -224,6 +236,18 @@ export const Header: React.FC = () => {
             }`}
           >
             Katalog Barang
+          </Link>
+
+          <Link
+            to="/tentang"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`flex items-center h-12 px-4 rounded-xl text-sm font-semibold ${
+              isAbout
+                ? 'bg-brand-50 text-brand-700'
+                : 'text-slate-700 hover:bg-slate-50'
+            }`}
+          >
+            Tentang WarisanKampus
           </Link>
 
           <Link

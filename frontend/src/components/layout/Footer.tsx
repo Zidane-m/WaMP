@@ -32,6 +32,11 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/tentang" className="text-slate-600 hover:text-brand-600 transition-colors">
+                  Tentang WarisanKampus
+                </Link>
+              </li>
+              <li>
                 <Link to="/jual" className="text-slate-600 hover:text-brand-600 transition-colors">
                   Pasang Iklan Barang
                 </Link>
