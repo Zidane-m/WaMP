@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, Heart } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
@@ -62,8 +62,8 @@ export const Footer: React.FC = () => {
           <p>
             &copy; {new Date().getFullYear()} WarisanKampus. Hak Cipta Dilindungi.
           </p>
-          <p className="flex items-center gap-1 text-slate-500">
-            Dibuat dengan <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> untuk mahasiswa Indonesia
+          <p className="text-slate-500 text-center sm:text-right font-medium">
+            Dari mahasiswa, oleh mahasiswa, untuk mahasiswa Indonesia
           </p>
         </div>
       </div>

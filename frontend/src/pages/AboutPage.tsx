@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   ShoppingBag,
-  Sparkles,
   ShieldCheck,
   Repeat,
   Gift,
@@ -31,7 +30,6 @@ export const AboutPage: React.FC = () => {
         <header className="relative overflow-hidden bg-gradient-to-br from-navy-900 via-navy-800 to-brand-900 text-white rounded-3xl p-8 sm:p-12 shadow-xl border border-navy-700">
           <div className="relative z-10 max-w-3xl space-y-4">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/30 text-brand-300 text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" />
               Platform Estafet Barang Mahasiswa
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
@@ -259,8 +257,8 @@ export const AboutPage: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-700 bg-slate-50 p-5 rounded-xl border border-slate-100">
             <div>
               <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Pengembang</p>
-              <p className="font-bold text-navy-900 text-base mt-0.5">Muhammad Zidan</p>
-              <p className="text-xs text-slate-500 mt-1">Mahasiswa Teknik Informatika / Ilmu Komputer</p>
+              <p className="font-bold text-navy-900 text-base mt-0.5">Muhammad Zidan Mirza Fedrieka</p>
+              <p className="text-xs text-slate-500 mt-1">Mahasiswa Ilmu Komputer Universitas Pendidikan Indonesia</p>
             </div>
 
             <div>
