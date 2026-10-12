@@ -33,3 +33,9 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Internal notes & AI prompt configs
+AGENTS.md
+PROMPT_IDE.md
+konfirmasi.md
+plan.md
