@@ -34,7 +34,7 @@ Thumbs.db
 *.sln
 *.sw?
 
-# Internal notes & AI prompt configs
+# Internal notes & configs
 AGENTS.md
 PROMPT_IDE.md
 konfirmasi.md
