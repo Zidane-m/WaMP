@@ -1,6 +1,7 @@
 # WarisanKampus: Platform Estafet Barang Mahasiswa Lintas Kampus
 
 Platform web *marketplace* dan estafet perlengkapan kuliah (*preloved*, barter, dan hibah) antar-mahasiswa lintas perguruan tinggi di seluruh Indonesia.
+
 link website: https://warisankampus-demo.vercel.app
 
 ---
