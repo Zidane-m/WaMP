@@ -11,21 +11,35 @@ dist/
 dist-ssr/
 *.local
 *.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
 
 # Uploads (foto disimpan di backend/uploads)
 backend/uploads/*
 !backend/uploads/.gitkeep
+uploads/*
+!uploads/.gitkeep
 
-# Logs
+# Logs & Debug
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Test & Coverage
+coverage/
+*.lcov
+
+# Cache & Bundler
+.vite/
+.eslintcache
+.parcel-cache/
+
 # OS & IDE
 .DS_Store
 Thumbs.db
+desktop.ini
 .idea/
 .vscode/
 *.suo
@@ -33,9 +47,17 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+*.tmp
+*.bak
 
-# Internal notes & configs
+# Database lokal / Dumps
+*.sqlite
+*.sqlite3
+*.db
+
+# Internal notes, configs & root drafts
 AGENTS.md
 PROMPT_IDE.md
 konfirmasi.md
 plan.md
+/API.md
