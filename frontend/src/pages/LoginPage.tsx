@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LogIn, Mail, Lock, AlertCircle, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { LogIn, Mail, Lock, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const LoginPage: React.FC = () => {
@@ -37,26 +37,6 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleDemoLogin = async () => {
-    setError(null);
-    setEmail('dewi@students.itb.ac.id');
-    setPassword('password123');
-
-    try {
-      setIsSubmitting(true);
-      await login({
-        email: 'dewi@students.itb.ac.id',
-        password: 'password123'
-      });
-      navigate(from, { replace: true });
-    } catch (err: any) {
-      const msg = err.response?.data?.error?.message || 'Login demo gagal.';
-      setError(msg);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
@@ -87,27 +67,6 @@ export const LoginPage: React.FC = () => {
             <p className="font-medium">{error}</p>
           </div>
         )}
-
-        {/* Demo Account Box */}
-        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-navy-900">
-              <CheckCircle2 className="w-4 h-4 text-brand-600" />
-              <span>Akun Demo Evaluator</span>
-            </div>
-            <button
-              type="button"
-              onClick={handleDemoLogin}
-              disabled={isSubmitting}
-              className="text-xs font-bold text-brand-600 hover:text-brand-800 hover:underline min-h-[36px] flex items-center"
-            >
-              1-Klik Masuk Demo
-            </button>
-          </div>
-          <p className="text-xs text-slate-500">
-            Email: <span className="font-mono text-slate-700">dewi@students.itb.ac.id</span> | Pass: <span className="font-mono text-slate-700">password123</span>
-          </p>
-        </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
