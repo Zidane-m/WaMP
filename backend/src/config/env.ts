@@ -11,7 +11,8 @@ export const env = {
     PORT: Number(process.env.DB_PORT) || 3306,
     USER: process.env.DB_USER || 'root',
     PASSWORD: process.env.DB_PASSWORD || '',
-    NAME: process.env.DB_NAME || 'campuspreloved'
+    NAME: process.env.DB_NAME || 'campuspreloved',
+    SSL: process.env.DB_SSL === 'true'
   },
   JWT_SECRET: process.env.JWT_SECRET || 'warisan-kampus-secret-key-2026'
 };
