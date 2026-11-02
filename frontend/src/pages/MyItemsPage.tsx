@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Package, PlusCircle, CheckCircle2, RefreshCw, Trash2, Edit3, ExternalLink, AlertCircle, ShoppingBag } from 'lucide-react';
+import { PlusCircle, CheckCircle2, RefreshCw, Trash2, Edit3, ExternalLink, AlertCircle, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../lib/api';
 import { Barang, StatusBarang } from '../types';
@@ -93,14 +93,6 @@ export const MyItemsPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 border-b border-slate-200">
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="p-2 bg-brand-50 text-brand-600 rounded-xl">
-              <Package className="w-5 h-5" />
-            </span>
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-2.5 py-1 rounded-md">
-              Dashboard Penjual
-            </span>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight">
             Barang Jualan Saya
           </h1>
@@ -111,7 +103,7 @@ export const MyItemsPage: React.FC = () => {
 
         <Link
           to="/jual"
-          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-brand-600 text-white hover:bg-brand-700 shadow-md shadow-brand-500/20 active:scale-98 transition-all min-h-[44px]"
+          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-brand-600 text-white hover:bg-brand-700 shadow-sm active:scale-98 transition-all min-h-[44px]"
         >
           <PlusCircle className="w-4 h-4" />
           Tambah Barang Baru
@@ -212,7 +204,7 @@ export const MyItemsPage: React.FC = () => {
                       >
                         {item.status}
                       </span>
-                      <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-white/95 backdrop-blur-xs text-navy-800 shadow-xs">
+                      <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-white text-navy-800 shadow-xs border border-slate-100">
                         {item.jenis_transaksi}
                       </span>
                     </div>

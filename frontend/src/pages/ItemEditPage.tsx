@@ -278,9 +278,6 @@ export const ItemEditPage: React.FC = () => {
 
       {/* Header Halaman Edit */}
       <div className="mb-8">
-        <span className="text-xs font-bold uppercase tracking-wider text-brand-600 block mb-1">
-          Perbarui Iklan Barang
-        </span>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight">
           Ubah Data Barang #{item.id_barang}
         </h1>

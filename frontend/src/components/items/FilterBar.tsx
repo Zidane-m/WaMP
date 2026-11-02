@@ -61,7 +61,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         className="flex flex-col gap-4"
         aria-label="Filter katalog barang"
       >
-        {/* Baris Atas: Input Pencarian */}
         <div className="relative w-full">
           <label htmlFor="search-input" className="sr-only">
             Cari barang atau nama buku
@@ -89,9 +88,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           )}
         </div>
 
-        {/* Baris Bawah: Dropdown Filter Kampus & Kategori + Tombol Reset */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {/* Dropdown Universitas */}
           <div>
             <label htmlFor="filter-univ" className="block text-xs font-semibold text-slate-600 mb-1.5">
               Universitas Asal Mahasiswa
@@ -127,7 +124,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             </div>
           </div>
 
-          {/* Dropdown Kategori */}
           <div>
             <label htmlFor="filter-kategori" className="block text-xs font-semibold text-slate-600 mb-1.5">
               Kategori Barang
@@ -150,7 +146,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             </div>
           </div>
 
-          {/* Tombol Reset Filter */}
           <div className="flex items-end">
             {hasActiveFilters ? (
               <button

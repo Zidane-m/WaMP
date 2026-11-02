@@ -84,7 +84,7 @@ export const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 animate-in fade-in duration-150"
     >
       <div className="bg-white rounded-3xl border border-slate-200 max-w-md w-full p-6 sm:p-7 shadow-xl relative animate-in zoom-in-95 duration-150">
         {/* Tombol Tutup */}
@@ -110,7 +110,7 @@ export const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block">
+            <span className="text-xs font-semibold text-slate-500 block">
               Otorisasi Pemilik
             </span>
             <h3 id="modal-title" className="text-lg font-bold text-navy-900">

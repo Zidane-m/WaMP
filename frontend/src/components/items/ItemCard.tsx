@@ -50,8 +50,8 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
 
         {/* Overlay Jika Barang Terjual */}
         {isSold && (
-          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px] flex items-center justify-center z-20 pointer-events-none">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-rose-600 text-white shadow-md uppercase tracking-wider">
+          <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center z-20 pointer-events-none">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-rose-600 text-white shadow-sm">
               <CheckCircle2 className="w-4 h-4" />
               Sudah Terjual
             </span>
@@ -96,7 +96,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
         <div className="pt-3 border-t border-slate-100 mt-2">
           <div className="flex items-baseline justify-between mb-3">
             <div>
-              <span className="text-[11px] font-medium text-slate-400 block uppercase tracking-wider">
+              <span className="text-[11px] font-medium text-slate-400 block">
                 {item.jenis_transaksi === 'Jual' ? 'Harga' : 'Model Transaksi'}
               </span>
               <span className="text-lg font-extrabold text-navy-900 tracking-tight">

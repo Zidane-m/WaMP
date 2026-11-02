@@ -21,7 +21,6 @@ export const ItemGrid: React.FC<ItemGridProps> = ({
   onResetFilter,
   hasActiveFilter = false,
 }) => {
-  // State Error
   if (error && !isLoading) {
     return (
       <div className="py-12">
@@ -30,7 +29,6 @@ export const ItemGrid: React.FC<ItemGridProps> = ({
     );
   }
 
-  // State Loading Skeleton
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
@@ -56,7 +54,6 @@ export const ItemGrid: React.FC<ItemGridProps> = ({
     );
   }
 
-  // State Kosong (Tidak ada barang ditemukan)
   if (items.length === 0) {
     return (
       <div className="py-8">
@@ -75,7 +72,6 @@ export const ItemGrid: React.FC<ItemGridProps> = ({
     );
   }
 
-  // State Berisi Barang
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
       {items.map((item) => (

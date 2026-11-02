@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-navy-900 mb-3">
+            <h4 className="text-sm font-bold text-navy-900 mb-3">
               Navigasi Cepat
             </h4>
             <ul className="space-y-2 text-sm">
@@ -46,7 +46,7 @@ export const Footer: React.FC = () => {
 
           {/* University Info */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-navy-900 mb-3">
+            <h4 className="text-sm font-bold text-navy-900 mb-3">
               Mata Kuliah
             </h4>
             <p className="text-sm text-slate-600 leading-relaxed">

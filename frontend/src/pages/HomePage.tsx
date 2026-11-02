@@ -3,7 +3,6 @@ import { useSearchParams, Link } from 'react-router-dom';
 import {
   PlusCircle,
   RefreshCw,
-  GraduationCap,
   ChevronDown,
 } from 'lucide-react';
 import { api } from '../lib/api';
@@ -16,24 +15,20 @@ export const HomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const catalogRef = useRef<HTMLElement | null>(null);
 
-  // Parameter dari URL query
   const univParam = searchParams.get('univ') || '';
   const categoryParam = searchParams.get('kategori') || '';
   const searchParam = searchParams.get('q') || '';
   const pageParam = parseInt(searchParams.get('page') || '1', 10);
   const currentPage = isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
 
-  // Data State
   const [items, setItems] = useState<Barang[]>([]);
   const [universities, setUniversities] = useState<Universitas[]>([]);
   const [categories, setCategories] = useState<Kategori[]>([]);
   const [pagination, setPagination] = useState<PaginationMeta | null>(null);
 
-  // Status State
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fungsi scroll halus ke katalog
   const scrollToCatalog = () => {
     const el = catalogRef.current || document.getElementById('katalog-barang');
     if (el) {
@@ -41,7 +36,6 @@ export const HomePage: React.FC = () => {
     }
   };
 
-  // Ambil data referensi (Universitas & Kategori) sekali saat mount
   useEffect(() => {
     let isMounted = true;
 
@@ -67,7 +61,6 @@ export const HomePage: React.FC = () => {
     };
   }, []);
 
-  // Ambil data barang berdasarkan filter aktif dan halaman
   const fetchItems = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -100,7 +93,6 @@ export const HomePage: React.FC = () => {
 
   const hasActiveFilter = Boolean(univParam || categoryParam || searchParam);
 
-  // Otomatis gulir ke katalog jika ada filter aktif atau sedang di halaman > 1
   useEffect(() => {
     if (hasActiveFilter || currentPage > 1) {
       const timer = setTimeout(() => {
@@ -110,7 +102,6 @@ export const HomePage: React.FC = () => {
     }
   }, [univParam, categoryParam, searchParam, currentPage, hasActiveFilter]);
 
-  // Handler update filter ke URL search params
   const handleFilterChange = (newFilters: { univ?: string; category?: string; search?: string }) => {
     const updated = new URLSearchParams(searchParams);
 
@@ -138,13 +129,11 @@ export const HomePage: React.FC = () => {
       }
     }
 
-    // Reset ke halaman 1 saat filter berubah
     updated.delete('page');
 
     setSearchParams(updated, { replace: true });
   };
 
-  // Handler ubah halaman
   const handlePageChange = (newPage: number) => {
     const updated = new URLSearchParams(searchParams);
     if (newPage > 1) {
@@ -156,40 +145,24 @@ export const HomePage: React.FC = () => {
     scrollToCatalog();
   };
 
-  // Handler reset semua filter
   const handleResetFilter = () => {
     setSearchParams({}, { replace: true });
   };
 
-  // Nama universitas terpilih untuk teks header dinamis
   const selectedUnivName = univParam
     ? universities.find((u) => String(u.id_universitas) === univParam)?.nama_universitas
     : null;
 
   return (
     <div className="w-full flex-1 flex flex-col">
-      {/* Hero Section: Tampilan Penuh Layar Awal (Above-the-fold) */}
+      {/* Hero */}
       <section
         aria-labelledby="hero-title"
         className="relative min-h-[calc(100vh-4rem)] flex flex-col justify-between items-center text-center px-4 sm:px-6 lg:px-8 py-8 sm:py-14 overflow-hidden bg-gradient-to-b from-brand-50/50 via-slate-50 to-white border-b border-slate-200/80"
       >
-        {/* Dekorasi Latar: Ornamen Pencahayaan Kampus Halus */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-          <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-brand-200/30 blur-3xl" />
-          <div className="absolute top-1/3 -right-24 w-96 h-96 rounded-full bg-navy-200/25 blur-3xl" />
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-200 to-transparent" />
-        </div>
-
-        {/* Pembatas Ruang Atas */}
         <div className="w-full h-2 sm:h-4" />
 
-        {/* Inti Konten Hero */}
         <div className="max-w-3xl mx-auto z-10 my-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-100/90 text-brand-800 mb-6 border border-brand-200/60 shadow-xs">
-            <GraduationCap className="w-4 h-4 text-brand-600" />
-            <span>Estafet Barang Mahasiswa Lintas Kampus</span>
-          </div>
-
           <h1
             id="hero-title"
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-navy-900 tracking-tight mb-5 leading-[1.15]"
@@ -215,13 +188,12 @@ export const HomePage: React.FC = () => {
               onClick={scrollToCatalog}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-navy-900 active:bg-slate-100 transition-all min-h-[44px]"
             >
-              <span>Jelajahi Katalog</span>
+              <span>Lihat Katalog Barang</span>
               <ChevronDown className="w-4 h-4 text-slate-500" />
             </button>
           </div>
         </div>
 
-        {/* Indikator Gulir Bawah */}
         <div className="z-10 pt-6 pb-2">
           <button
             type="button"
@@ -229,7 +201,7 @@ export const HomePage: React.FC = () => {
             className="group inline-flex flex-col items-center gap-1.5 text-slate-500 hover:text-brand-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 rounded-xl p-2 min-h-[44px]"
             aria-label="Gulir ke katalog barang"
           >
-            <span className="text-xs font-semibold tracking-wide">Lihat Katalog Barang</span>
+            <span className="text-xs font-semibold">Katalog</span>
             <div className="w-8 h-8 rounded-full border border-slate-200 bg-white/90 group-hover:border-brand-300 group-hover:bg-brand-50 flex items-center justify-center transition-all group-hover:translate-y-1">
               <ChevronDown className="w-4 h-4" />
             </div>
@@ -237,7 +209,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Bagian Katalog Barang */}
+      {/* Katalog */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 w-full">
         <section
           ref={catalogRef}
@@ -259,7 +231,6 @@ export const HomePage: React.FC = () => {
               </p>
             </div>
 
-            {/* Tombol Segarkan */}
             <button
               type="button"
               onClick={fetchItems}
@@ -273,7 +244,6 @@ export const HomePage: React.FC = () => {
             </button>
           </div>
 
-          {/* Bilah Filter dan Pencarian */}
           <FilterBar
             universities={universities}
             categories={categories}
@@ -285,7 +255,6 @@ export const HomePage: React.FC = () => {
             isLoading={isLoading}
           />
 
-          {/* Grid Katalog Barang */}
           <ItemGrid
             items={items}
             isLoading={isLoading}
@@ -295,7 +264,6 @@ export const HomePage: React.FC = () => {
             hasActiveFilter={hasActiveFilter}
           />
 
-          {/* Paginasi */}
           {pagination && pagination.total_pages > 1 && !isLoading && (
             <Pagination
               currentPage={pagination.page}

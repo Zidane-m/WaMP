@@ -105,7 +105,7 @@ export const RegisterPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Baris 1: Nama Lengkap */}
           <div>
-            <label htmlFor="reg-nama" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            <label htmlFor="reg-nama" className="block text-sm font-semibold text-slate-700 mb-1.5">
               Nama Lengkap Mahasiswa *
             </label>
             <div className="relative">
@@ -128,7 +128,7 @@ export const RegisterPage: React.FC = () => {
           {/* Baris 2: Email & Kata Sandi (2 Kolom Sejajar) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="reg-email" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              <label htmlFor="reg-email" className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Email Kampus / Pribadi *
               </label>
               <div className="relative">
@@ -149,7 +149,7 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="reg-password" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              <label htmlFor="reg-password" className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Kata Sandi *
               </label>
               <div className="relative">
@@ -174,7 +174,7 @@ export const RegisterPage: React.FC = () => {
           {/* Baris 3: Universitas & WhatsApp (2 Kolom Sejajar Simetris) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="reg-univ" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              <label htmlFor="reg-univ" className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Universitas / Kampus Asal *
               </label>
               <div className="relative">
@@ -200,7 +200,7 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="reg-wa" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              <label htmlFor="reg-wa" className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Nomor WhatsApp *
               </label>
               <div className="relative">

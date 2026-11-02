@@ -80,7 +80,7 @@ export const Badge: React.FC<BadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center font-medium rounded-full border ${sizeStyles} ${
+      className={`inline-flex items-center font-medium rounded-md border ${sizeStyles} ${
         variantStyles[normalized] || variantStyles.default
       } ${className}`}
     >

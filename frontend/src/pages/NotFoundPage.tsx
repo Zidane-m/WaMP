@@ -8,9 +8,9 @@ export const NotFoundPage: React.FC = () => {
       <div className="w-20 h-20 mb-6 rounded-3xl bg-slate-100 text-slate-500 flex items-center justify-center">
         <HelpCircle className="w-10 h-10" />
       </div>
-      <span className="text-sm font-bold uppercase tracking-wider text-brand-600 mb-2">
+      <p className="text-sm font-semibold text-brand-700 mb-1">
         Error 404
-      </span>
+      </p>
       <h1 className="text-3xl font-extrabold text-navy-900 mb-3">
         Halaman Tidak Ditemukan
       </h1>

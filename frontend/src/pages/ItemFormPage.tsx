@@ -239,9 +239,6 @@ export const ItemFormPage: React.FC = () => {
 
       {/* Header Formulir */}
       <div className="mb-8">
-        <span className="text-xs font-bold uppercase tracking-wider text-brand-600 block mb-1">
-          Formulir Estafet Barang
-        </span>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight">
           Pasang Barang di WarisanKampus
         </h1>

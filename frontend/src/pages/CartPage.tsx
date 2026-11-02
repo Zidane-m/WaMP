@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Trash2, MessageCircle, ArrowRight, ArrowLeft, CheckCircle2, School, ShieldCheck } from 'lucide-react';
+import { ShoppingCart, Trash2, MessageCircle, ArrowLeft, CheckCircle2, School, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../lib/api';
 import { CartItem } from '../types';
@@ -78,14 +78,6 @@ export const CartPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="p-2 bg-brand-50 text-brand-600 rounded-xl">
-              <ShoppingCart className="w-5 h-5" />
-            </span>
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-2.5 py-1 rounded-md">
-              Daftar Incaran
-            </span>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight">
             Keranjang Incaran Kampus
           </h1>
@@ -94,7 +86,7 @@ export const CartPage: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-slate-700 bg-slate-100 px-3.5 py-1.5 rounded-xl">
+          <span className="text-sm font-semibold text-slate-700 bg-slate-100 px-3.5 py-1.5 rounded-xl">
             {items.length} Barang Disimpan
           </span>
         </div>
@@ -118,10 +110,9 @@ export const CartPage: React.FC = () => {
           </p>
           <Link
             to="/"
-            className="mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-brand-600 text-white hover:bg-brand-700 shadow-md shadow-brand-500/20 transition-all min-h-[44px]"
+            className="mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-brand-600 text-white hover:bg-brand-700 shadow-sm transition-all min-h-[44px]"
           >
-            <span>Jelajahi Katalog Barang</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>Buka Katalog Barang</span>
           </Link>
         </div>
       ) : (
@@ -160,7 +151,7 @@ export const CartPage: React.FC = () => {
                       </div>
                     )}
                     {isSold && (
-                      <span className="absolute inset-0 bg-navy-900/60 backdrop-blur-[1px] flex items-center justify-center text-white text-[11px] font-bold">
+                      <span className="absolute inset-0 bg-navy-900/60 flex items-center justify-center text-white text-[11px] font-bold">
                         Terjual
                       </span>
                     )}

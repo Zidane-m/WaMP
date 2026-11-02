@@ -16,10 +16,9 @@ export const Pagination: React.FC<PaginationProps> = ({
 }) => {
   if (totalPages <= 1) return null;
 
-  // Bangun rentang nomor halaman yang ditampilkan
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
-    const delta = 1; // Tampilkan 1 halaman di kiri dan kanan halaman aktif
+    const delta = 1;
 
     for (let i = 1; i <= totalPages; i++) {
       if (
@@ -42,7 +41,6 @@ export const Pagination: React.FC<PaginationProps> = ({
       className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-10"
       aria-label="Navigasi Halaman Katalog"
     >
-      {/* Tombol Sebelumnya */}
       <button
         type="button"
         onClick={() => onPageChange(currentPage - 1)}
@@ -54,7 +52,6 @@ export const Pagination: React.FC<PaginationProps> = ({
         <span className="hidden sm:inline">Sebelumnya</span>
       </button>
 
-      {/* Nomor-nomor Halaman */}
       {pages.map((p, idx) => {
         if (p === '...') {
           return (
@@ -86,7 +83,6 @@ export const Pagination: React.FC<PaginationProps> = ({
         );
       })}
 
-      {/* Tombol Selanjutnya */}
       <button
         type="button"
         onClick={() => onPageChange(currentPage + 1)}

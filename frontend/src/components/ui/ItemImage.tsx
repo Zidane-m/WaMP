@@ -79,10 +79,10 @@ export const ItemImage: React.FC<ItemImageProps> = ({
       <div
         className={`w-full ${aspectStyles} ${theme.bg} border flex flex-col items-center justify-center p-4 text-center select-none ${className}`}
       >
-        <div className="p-3 bg-white/80 rounded-2xl shadow-sm mb-2 backdrop-blur-xs">
+        <div className="p-3 bg-white rounded-2xl shadow-xs mb-2 border border-slate-200/60">
           {theme.icon}
         </div>
-        <span className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
+        <span className="text-xs font-medium text-slate-600">
           {categoryName || theme.label}
         </span>
       </div>

@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   ShieldCheck,
   Tag,
-  Sparkles,
   ShoppingCart,
   BookmarkCheck,
   UserCheck
@@ -308,8 +307,8 @@ export const ItemDetailPage: React.FC = () => {
 
             {/* Overlay jika barang sudah terjual */}
             {isSold && (
-              <div className="absolute inset-0 bg-slate-900/65 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10">
-                <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold bg-rose-600 text-white shadow-lg uppercase tracking-wider mb-2">
+              <div className="absolute inset-0 bg-slate-900/65 flex flex-col items-center justify-center p-6 text-center z-10">
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold bg-rose-600 text-white shadow-sm mb-2">
                   <CheckCircle2 className="w-4 h-4" />
                   Sudah Terjual
                 </span>
@@ -320,9 +319,8 @@ export const ItemDetailPage: React.FC = () => {
             )}
           </div>
 
-          {/* Kotak Tip Keamanan COD Mahasiswa */}
           <div className="p-4 rounded-2xl bg-brand-50/70 border border-brand-200/60 text-xs text-brand-900 flex items-start gap-3">
-            <Sparkles className="w-4 h-4 text-brand-600 flex-shrink-0 mt-0.5" />
+            <ShieldCheck className="w-4 h-4 text-brand-600 flex-shrink-0 mt-0.5" />
             <p className="leading-relaxed">
               <strong>Tips Transaksi Aman:</strong> Sepakati lokasi COD yang ramai di lingkungan kampus (seperti kantin, perpustakaan, atau lobi fakultas). Cek kondisi barang sebelum membayar.
             </p>
@@ -345,7 +343,7 @@ export const ItemDetailPage: React.FC = () => {
                 Status: {item.status}
               </Badge>
               {isOwner && (
-                <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-navy-900 text-white shadow-xs">
+                <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-md bg-navy-900 text-white shadow-xs">
                   <UserCheck className="w-3.5 h-3.5" />
                   Barang Milik Anda
                 </span>
@@ -378,7 +376,7 @@ export const ItemDetailPage: React.FC = () => {
             {/* Harga */}
             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-baseline justify-between mt-4">
               <div>
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
+                <span className="text-xs font-semibold text-slate-500 block">
                   {item.jenis_transaksi === 'Jual' ? 'Harga Barang' : 'Model Transaksi'}
                 </span>
                 <span className="text-2xl sm:text-3xl font-extrabold text-navy-950 tracking-tight">
@@ -408,8 +406,8 @@ export const ItemDetailPage: React.FC = () => {
 
           {/* Kotak Kontak Penjual & Aksi Keranjang / WhatsApp */}
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-5">
-            <h2 className="text-sm font-bold text-navy-900 uppercase tracking-wider">
-              Kontak & Pemesanan
+            <h2 className="text-sm font-bold text-navy-900">
+              Kontak dan Pemesanan
             </h2>
 
             <div className="flex items-center gap-4">
@@ -477,7 +475,7 @@ export const ItemDetailPage: React.FC = () => {
           <div className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/90 shadow-sm">
             <div className="flex items-center gap-2 mb-3">
               <ShieldCheck className="w-4 h-4 text-brand-600" />
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+              <h2 className="text-xs font-bold text-slate-700">
                 {isOwner ? 'Kelola Barang Anda (Akun Terverifikasi)' : 'Kelola Iklan Anda (Khusus Pemilik)'}
               </h2>
             </div>
