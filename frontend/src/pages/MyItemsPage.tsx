@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PlusCircle, CheckCircle2, RefreshCw, Trash2, Edit3, ExternalLink, AlertCircle, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -72,10 +72,35 @@ export const MyItemsPage: React.FC = () => {
     }
   };
 
-  const filteredItems = items.filter((it) => {
-    if (activeTab === 'Semua') return true;
-    return it.status === activeTab;
-  });
+  // Optimasi for-loop single-pass: hitung jumlah tab & filter barang dalam 1 lintasan
+  const { tabCounts, filteredItems } = useMemo(() => {
+    let countTersedia = 0;
+    let countTerjual = 0;
+    const filtered: Barang[] = [];
+    const len = items.length;
+
+    for (let i = 0; i < len; i++) {
+      const it = items[i];
+      if (it.status === 'Tersedia') {
+        countTersedia++;
+      } else if (it.status === 'Terjual') {
+        countTerjual++;
+      }
+
+      if (activeTab === 'Semua' || it.status === activeTab) {
+        filtered.push(it);
+      }
+    }
+
+    return {
+      tabCounts: {
+        Semua: len,
+        Tersedia: countTersedia,
+        Terjual: countTerjual,
+      },
+      filteredItems: filtered,
+    };
+  }, [items, activeTab]);
 
   if (authLoading || isLoading) {
     return (
@@ -128,7 +153,7 @@ export const MyItemsPage: React.FC = () => {
       {/* Tab Filter */}
       <div className="flex items-center gap-2 mt-8 mb-6 border-b border-slate-200 pb-2">
         {(['Semua', 'Tersedia', 'Terjual'] as const).map((tab) => {
-          const count = items.filter((it) => (tab === 'Semua' ? true : it.status === tab)).length;
+          const count = tabCounts[tab];
           const isActive = activeTab === tab;
           return (
             <button

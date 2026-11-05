@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Search, X, RotateCcw, Filter } from 'lucide-react';
 import { Universitas, Kategori } from '../../types';
 
@@ -24,6 +24,22 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   isLoading = false,
 }) => {
   const [searchInput, setSearchInput] = useState(searchQuery);
+
+  // Optimasi for-loop single-pass: kelompokkan universitas berdasarkan wilayah sekali saja saat data dimuat
+  const groupedUniversities = useMemo(() => {
+    const map: Record<string, Universitas[]> = {};
+    const len = universities.length;
+    for (let i = 0; i < len; i++) {
+      const u = universities[i];
+      const region = u.provinsi || 'Lainnya';
+      if (!map[region]) {
+        map[region] = [u];
+      } else {
+        map[region].push(u);
+      }
+    }
+    return Object.entries(map);
+  }, [universities]);
 
   // Sinkronkan input lokal jika query dari URL berubah
   useEffect(() => {
@@ -102,24 +118,15 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 className="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white text-slate-800 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:border-brand-500 min-h-[44px] transition-colors"
               >
                 <option value="">Semua Universitas ({universities.length} Kampus)</option>
-                {(() => {
-                  const grouped = universities.reduce<Record<string, Universitas[]>>((acc, u) => {
-                    const region = u.provinsi || 'Lainnya';
-                    if (!acc[region]) acc[region] = [];
-                    acc[region].push(u);
-                    return acc;
-                  }, {});
-
-                  return Object.entries(grouped).map(([region, univList]) => (
-                    <optgroup key={region} label={`Wilayah: ${region}`}>
-                      {univList.map((u) => (
-                        <option key={u.id_universitas} value={String(u.id_universitas)}>
-                          {u.nama_universitas} ({u.kota})
-                        </option>
-                      ))}
-                    </optgroup>
-                  ));
-                })()}
+                {groupedUniversities.map(([region, univList]) => (
+                  <optgroup key={region} label={`Wilayah: ${region}`}>
+                    {univList.map((u) => (
+                      <option key={u.id_universitas} value={String(u.id_universitas)}>
+                        {u.nama_universitas} ({u.kota})
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
               </select>
             </div>
           </div>

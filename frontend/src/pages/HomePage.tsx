@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
   PlusCircle,
@@ -102,37 +102,38 @@ export const HomePage: React.FC = () => {
     }
   }, [univParam, categoryParam, searchParam, currentPage, hasActiveFilter]);
 
-  const handleFilterChange = (newFilters: { univ?: string; category?: string; search?: string }) => {
-    const updated = new URLSearchParams(searchParams);
+  const handleFilterChange = useCallback((newFilters: { univ?: string; category?: string; search?: string }) => {
+    setSearchParams((prevParams) => {
+      const updated = new URLSearchParams(prevParams);
 
-    if (newFilters.univ !== undefined) {
-      if (newFilters.univ) {
-        updated.set('univ', newFilters.univ);
-      } else {
-        updated.delete('univ');
+      if (newFilters.univ !== undefined) {
+        if (newFilters.univ) {
+          updated.set('univ', newFilters.univ);
+        } else {
+          updated.delete('univ');
+        }
       }
-    }
 
-    if (newFilters.category !== undefined) {
-      if (newFilters.category) {
-        updated.set('kategori', newFilters.category);
-      } else {
-        updated.delete('kategori');
+      if (newFilters.category !== undefined) {
+        if (newFilters.category) {
+          updated.set('kategori', newFilters.category);
+        } else {
+          updated.delete('kategori');
+        }
       }
-    }
 
-    if (newFilters.search !== undefined) {
-      if (newFilters.search.trim()) {
-        updated.set('q', newFilters.search.trim());
-      } else {
-        updated.delete('q');
+      if (newFilters.search !== undefined) {
+        if (newFilters.search.trim()) {
+          updated.set('q', newFilters.search.trim());
+        } else {
+          updated.delete('q');
+        }
       }
-    }
 
-    updated.delete('page');
-
-    setSearchParams(updated, { replace: true });
-  };
+      updated.delete('page');
+      return updated;
+    }, { replace: true });
+  }, [setSearchParams]);
 
   const handlePageChange = (newPage: number) => {
     const updated = new URLSearchParams(searchParams);
@@ -149,9 +150,17 @@ export const HomePage: React.FC = () => {
     setSearchParams({}, { replace: true });
   };
 
-  const selectedUnivName = univParam
-    ? universities.find((u) => String(u.id_universitas) === univParam)?.nama_universitas
-    : null;
+  // Optimasi for-loop dengan early-exit: cari nama universitas terpilih
+  const selectedUnivName = useMemo(() => {
+    if (!univParam) return null;
+    const len = universities.length;
+    for (let i = 0; i < len; i++) {
+      if (String(universities[i].id_universitas) === univParam) {
+        return universities[i].nama_universitas;
+      }
+    }
+    return null;
+  }, [universities, univParam]);
 
   return (
     <div className="w-full flex-1 flex flex-col">

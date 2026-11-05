@@ -13,6 +13,8 @@ interface ItemGridProps {
   hasActiveFilter?: boolean;
 }
 
+const SKELETON_ITEMS = [0, 1, 2, 3, 4, 5, 6, 7];
+
 export const ItemGrid: React.FC<ItemGridProps> = ({
   items,
   isLoading,
@@ -32,7 +34,7 @@ export const ItemGrid: React.FC<ItemGridProps> = ({
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-        {Array.from({ length: 8 }).map((_, idx) => (
+        {SKELETON_ITEMS.map((idx) => (
           <div
             key={idx}
             className="bg-white rounded-2xl border border-slate-200/80 p-4 flex flex-col justify-between animate-pulse"

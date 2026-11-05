@@ -84,38 +84,44 @@ export async function getKeranjang(userId: number): Promise<CartSummary> {
     [userId]
   );
 
-  const items: CartItem[] = rows.map((r) => ({
-    id_keranjang: r.id_keranjang,
-    added_at: r.added_at,
-    id_barang: r.id_barang,
-    nama_barang: r.nama_barang,
-    deskripsi: r.deskripsi,
-    harga: Number(r.harga),
-    jenis_transaksi: r.jenis_transaksi,
-    kondisi: r.kondisi,
-    status: r.status,
-    gambar_url: r.gambar_url,
-    kategori: {
-      id_kategori: r.id_kategori,
-      nama_kategori: r.nama_kategori
-    },
-    penjual: {
-      id_pengguna: r.id_penjual,
-      nama_lengkap: r.nama_penjual,
-      no_whatsapp: r.no_whatsapp,
-      universitas: {
-        id_universitas: r.id_universitas,
-        nama_universitas: r.nama_universitas
-      }
-    }
-  }));
+  // Optimasi for-loop single-pass: memetakan baris DB dan menghitung estimasi dalam 1 iterasi (menggantikan .map() + .reduce())
+  const len = rows.length;
+  const items: CartItem[] = new Array(len);
+  let total_estimasi = 0;
 
-  const total_estimasi = items.reduce((acc, curr) => {
-    if (curr.jenis_transaksi === 'Jual' && curr.status === 'Tersedia') {
-      return acc + curr.harga;
+  for (let i = 0; i < len; i++) {
+    const r = rows[i];
+    const hargaNum = Number(r.harga);
+    items[i] = {
+      id_keranjang: r.id_keranjang,
+      added_at: r.added_at,
+      id_barang: r.id_barang,
+      nama_barang: r.nama_barang,
+      deskripsi: r.deskripsi,
+      harga: hargaNum,
+      jenis_transaksi: r.jenis_transaksi,
+      kondisi: r.kondisi,
+      status: r.status,
+      gambar_url: r.gambar_url,
+      kategori: {
+        id_kategori: r.id_kategori,
+        nama_kategori: r.nama_kategori
+      },
+      penjual: {
+        id_pengguna: r.id_penjual,
+        nama_lengkap: r.nama_penjual,
+        no_whatsapp: r.no_whatsapp,
+        universitas: {
+          id_universitas: r.id_universitas,
+          nama_universitas: r.nama_universitas
+        }
+      }
+    };
+
+    if (r.jenis_transaksi === 'Jual' && r.status === 'Tersedia') {
+      total_estimasi += hargaNum;
     }
-    return acc;
-  }, 0);
+  }
 
   return {
     items,

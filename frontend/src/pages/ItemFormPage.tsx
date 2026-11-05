@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import {
@@ -39,6 +39,22 @@ export const ItemFormPage: React.FC = () => {
   const [universities, setUniversities] = useState<Universitas[]>([]);
   const [categories, setCategories] = useState<Kategori[]>([]);
   const [isLoadingDropdown, setIsLoadingDropdown] = useState<boolean>(true);
+
+  // Optimasi for-loop single-pass: kelompokkan universitas berdasarkan wilayah sekali saja saat data dimuat
+  const groupedUniversities = useMemo(() => {
+    const map: Record<string, Universitas[]> = {};
+    const len = universities.length;
+    for (let i = 0; i < len; i++) {
+      const u = universities[i];
+      const region = u.provinsi || 'Lainnya';
+      if (!map[region]) {
+        map[region] = [u];
+      } else {
+        map[region].push(u);
+      }
+    }
+    return Object.entries(map);
+  }, [universities]);
 
   // Status Form & Upload
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -608,24 +624,15 @@ export const ItemFormPage: React.FC = () => {
                   }`}
                 >
                   <option value="">Pilih Kampus Anda</option>
-                  {(() => {
-                    const grouped = universities.reduce<Record<string, Universitas[]>>((acc, u) => {
-                      const region = u.provinsi || 'Lainnya';
-                      if (!acc[region]) acc[region] = [];
-                      acc[region].push(u);
-                      return acc;
-                    }, {});
-
-                    return Object.entries(grouped).map(([region, univList]) => (
-                      <optgroup key={region} label={`Wilayah: ${region}`}>
-                        {univList.map((u) => (
-                          <option key={u.id_universitas} value={String(u.id_universitas)}>
-                            {u.nama_universitas} ({u.kota})
-                          </option>
-                        ))}
-                      </optgroup>
-                    ));
-                  })()}
+                  {groupedUniversities.map(([region, univList]) => (
+                    <optgroup key={region} label={`Wilayah: ${region}`}>
+                      {univList.map((u) => (
+                        <option key={u.id_universitas} value={String(u.id_universitas)}>
+                          {u.nama_universitas} ({u.kota})
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
                 </select>
                 {errors.id_universitas && (
                   <p className="text-rose-600 text-xs mt-1.5 font-medium">{errors.id_universitas.message}</p>

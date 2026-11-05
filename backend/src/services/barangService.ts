@@ -175,8 +175,15 @@ export async function getBarangList(filters: FilterParams): Promise<{
   const queryParams = [...params, limit, offset];
   const [rows] = await pool.query<RawBarangRow[]>(dataSql, queryParams);
 
+  // Optimasi for-loop terindeks: mapping hasil database dengan pre-allocated array untuk performa tinggi
+  const len = rows.length;
+  const data: BarangItem[] = new Array(len);
+  for (let i = 0; i < len; i++) {
+    data[i] = mapRowToBarangItem(rows[i]);
+  }
+
   return {
-    data: rows.map(mapRowToBarangItem),
+    data,
     meta: {
       page,
       limit,
@@ -248,7 +255,13 @@ export async function getBarangSaya(userId: number): Promise<BarangItem[]> {
     [userId]
   );
 
-  return rows.map(mapRowToBarangItem);
+  // Optimasi for-loop terindeks: pre-allocated array
+  const len = rows.length;
+  const data: BarangItem[] = new Array(len);
+  for (let i = 0; i < len; i++) {
+    data[i] = mapRowToBarangItem(rows[i]);
+  }
+  return data;
 }
 
 export interface CreateBarangInput {

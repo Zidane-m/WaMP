@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PaginationProps {
@@ -16,25 +16,32 @@ export const Pagination: React.FC<PaginationProps> = ({
 }) => {
   if (totalPages <= 1) return null;
 
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
+  // Optimasi O(1): langsung hitung rentang halaman aktif tanpa meloop 1..totalPages
+  const pages = useMemo(() => {
     const delta = 1;
+    const left = Math.max(2, currentPage - delta);
+    const right = Math.min(totalPages - 1, currentPage + delta);
 
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 ||
-        i === totalPages ||
-        (i >= currentPage - delta && i <= currentPage + delta)
-      ) {
-        pages.push(i);
-      } else if (pages[pages.length - 1] !== '...') {
-        pages.push('...');
-      }
+    const result: (number | string)[] = [1];
+
+    if (left > 2) {
+      result.push('...');
     }
-    return pages;
-  };
 
-  const pages = getPageNumbers();
+    for (let i = left; i <= right; i++) {
+      result.push(i);
+    }
+
+    if (right < totalPages - 1) {
+      result.push('...');
+    }
+
+    if (totalPages > 1) {
+      result.push(totalPages);
+    }
+
+    return result;
+  }, [currentPage, totalPages]);
 
   return (
     <nav

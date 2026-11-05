@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Trash2, MessageCircle, ArrowLeft, CheckCircle2, School, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -15,6 +15,22 @@ export const CartPage: React.FC = () => {
   const [totalEstimasi, setTotalEstimasi] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+
+  // Optimasi for-loop single-pass: hitung kategori ringkasan dalam 1 iterasi tanpa alokasi array ganda
+  const { forSaleAvailableCount, nonSaleCount } = useMemo(() => {
+    let forSale = 0;
+    let nonSale = 0;
+    const len = items.length;
+    for (let i = 0; i < len; i++) {
+      const it = items[i];
+      if (it.jenis_transaksi === 'Jual') {
+        if (it.status === 'Tersedia') forSale++;
+      } else {
+        nonSale++;
+      }
+    }
+    return { forSaleAvailableCount: forSale, nonSaleCount: nonSale };
+  }, [items]);
 
   const loadCart = async () => {
     try {
@@ -245,13 +261,13 @@ export const CartPage: React.FC = () => {
               <div className="flex items-center justify-between text-slate-600">
                 <span>Barang Siap Dibeli (Jual)</span>
                 <span className="font-bold text-navy-900">
-                  {items.filter((i) => i.jenis_transaksi === 'Jual' && i.status === 'Tersedia').length} item
+                  {forSaleAvailableCount} item
                 </span>
               </div>
               <div className="flex items-center justify-between text-slate-600">
                 <span>Barang Barter / Hibah</span>
                 <span className="font-bold text-navy-900">
-                  {items.filter((i) => i.jenis_transaksi !== 'Jual').length} item
+                  {nonSaleCount} item
                 </span>
               </div>
 
